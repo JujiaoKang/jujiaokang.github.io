@@ -27,18 +27,18 @@
   <div class="titleline"><div><h1>数值变了，顺序变了吗？</h1><p class="sub">观察两列数据的变化：线性关联在变，大小顺序会变吗？</p></div></div>
   <section class="figures">
     <article class="figure">
-      <div class="fig-head"><div class="fig-title">原始数值 X 与 Y</div><span class="fig-note">可拖动任意散点</span></div>
+      <div class="fig-head"><div class="fig-title">原始数值 X 与 Y</div><span class="fig-note">五个散点均可上下拖动，允许改变秩次</span></div>
       <div class="plot raw"><svg id="raw" viewBox="0 0 690 374" role="img" aria-label="原始散点，蓝色点可上下拖动；原始数值变化时Pearson相关系数实时计算"></svg></div>
       <div class="metric"><div><strong>Pearson 相关系数</strong><div class="desc">原始数值之间的线性关联</div></div><div class="pearson-area"><svg class="spark" id="spark" viewBox="0 0 152 58" aria-label="Pearson系数在演示过程中的变化曲线"></svg><output class="pearson-number" id="pearson">1.000</output></div></div>
     </article>
     <article class="figure rank">
-      <div class="fig-head"><div class="fig-title">大小顺序（秩次）</div><span class="fig-note">1—6 对应的秩次</span></div>
-      <div class="plot"><svg id="ranks" viewBox="0 0 690 374" role="img" aria-label="秩次图，六个编号点始终固定在从左下到右上的对角线上"></svg></div>
-      <div class="metric"><div><strong>大小顺序监测</strong><div class="rankwatch" id="rankWatch"><span class="rankkey">R(Y)：</span><span class="rank-pill">1</span><span class="rank-pill">2</span><span class="rank-pill">3</span><span class="rank-pill">4</span><span class="rank-pill">5</span><span class="rank-pill">6</span></div></div><div class="rankstatus" id="rankStatus">始终一致 <span style="font-size:20px">✓</span></div></div>
+      <div class="fig-head"><div class="fig-title">大小顺序（秩次）</div><span class="fig-note">1—5 对应的秩次</span></div>
+      <div class="plot"><svg id="ranks" viewBox="0 0 690 374" role="img" aria-label="秩次图，五个编号点根据原始数据大小顺序实时变化"></svg></div>
+      <div class="metric"><div><strong>大小顺序监测</strong><div class="rankwatch" id="rankWatch"><span class="rankkey">R(Y)：</span><span class="rank-pill">1</span><span class="rank-pill">2</span><span class="rank-pill">3</span><span class="rank-pill">4</span><span class="rank-pill">5</span></div></div><div class="rankstatus" id="rankStatus">始终一致 <span style="font-size:20px">✓</span></div></div>
     </article>
   </section>
   <section class="controls" aria-label="课堂演示控制">
-    <div class="ctrlrow"><div class="current"><span class="caption">演示状态</span><output id="phaseState" aria-live="polite">准备开始</output><span class="stage" id="valueState">Y₆ = 6</span></div><div class="buttons">
+    <div class="ctrlrow"><div class="current"><span class="caption">演示状态</span><output id="phaseState" aria-live="polite">准备开始</output><span class="stage" id="valueState">Y₅ = 5</span></div><div class="buttons">
       <button class="btn" type="button" id="play">▶ 自动演示</button>
       <button class="btn secondary tiny" type="button" id="one">回放 01</button>
       <button class="btn secondary tiny" type="button" id="two">回放 02</button>
@@ -47,53 +47,53 @@
     </div></div>
     <div class="progress-outer" aria-label="动画进度"><div class="progress-inner" id="progress"></div></div>
     <div class="bottomrow"><div class="takeaway" id="takeaway">请先观察两幅图：原始数值改变时，<b>大小顺序是否仍然一致？</b></div></div>
-    <div class="extension-row"><div class="extension-copy"><strong>拓展实验 · 顺序真的改变时会怎样？</strong><br><span id="swapHelp">交换第5、6个观测值的大小顺序，观察右侧秩次图。</span></div><div class="extension-controls"><button class="btn extension" type="button" id="swap">⇄ 交换5、6的顺序</button><button class="btn secondary tiny" type="button" id="restore">恢复顺序</button></div></div>
+    <div class="extension-row"><div class="extension-copy"><strong>拓展实验 · 顺序真的改变时会怎样？</strong><br><span id="swapHelp">交换第4、5个观测值的大小顺序，观察右侧秩次图。</span></div><div class="extension-controls"><button class="btn extension" type="button" id="swap">⇄ 交换4、5的顺序</button><button class="btn secondary tiny" type="button" id="restore">恢复顺序</button></div></div>
   </section>
   <p class="footnote"></p>
 </main>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
-const X=[1,2,3,4,5,6],START=[1,2,3,4,5,6],STAGE1=[1,2,3,4,5,200],STAGE2=[42,105,150,182,199,208],STAGE3=X.map(v=>8+202*Math.pow(v/6,6)),SWAPPED=[1,2,3,4,6,5];
-const y=START.slice();let running=null,raf=0,drag=null,trace=[[],[],[],[],[],[]],history=[],lastTraceMs=0,pulsingUntil=0,changed=false,progress=0,plotYMax=10;
+const X=[1,2,3,4,5],START=[1,2,3,4,5],STAGE1=[1,2,3,4,200],STAGE2=[42,105,150,182,208],STAGE3=X.map(v=>8+202*Math.pow(v/5,6)),SWAPPED=[1,2,3,5,4];
+const y=START.slice();let running=null,raf=0,drag=null,trace=Array.from({length:X.length},()=>[]),history=[],lastTraceMs=0,pulsingUntil=0,changed=false,progress=0,plotYMax=10,selectedPoint=null;
 const EASE=t=>t*t*(3-2*t),clamp=(z,min,max)=>Math.max(min,Math.min(max,z));
 const css={blue:'#2466c3',teal:'#108e88',orange:'#df882b',grid:'#e9eff7',axis:'#6680a0'};
-const corr=(a,b)=>{const n=a.length,ma=a.reduce((s,v)=>s+v,0)/n,mb=b.reduce((s,v)=>s+v,0)/n;let cov=0,xx=0,yy=0;for(let i=0;i<n;i++){const u=a[i]-ma,v=b[i]-mb;cov+=u*v;xx+=u*u;yy+=v*v}return cov/Math.sqrt(xx*yy)};
+const corr=(a,b)=>{const n=a.length,ma=a.reduce((s,v)=>s+v,0)/n,mb=b.reduce((s,v)=>s+v,0)/n;let cov=0,xx=0,yy=0;for(let i=0;i<n;i++){const u=a[i]-ma,v=b[i]-mb;cov+=u*v;xx+=u*u;yy+=v*v}return xx<=1e-12||yy<=1e-12?NaN:cov/Math.sqrt(xx*yy)};
 const rank=a=>{const sorted=a.map((v,i)=>({v,i})).sort((a,b)=>a.v-b.v),out=[];for(let i=0;i<sorted.length;){let j=i+1;while(j<sorted.length&&sorted[j].v===sorted[i].v)j++;for(let k=i;k<j;k++)out[sorted[k].i]=(i+j+1)/2;i=j}return out;};
 function svgEl(parent,tag,attrs={},text){const o=document.createElementNS(NS,tag);for(const [k,v]of Object.entries(attrs))o.setAttribute(k,String(v));if(text!==undefined)o.textContent=text;parent.appendChild(o);return o}
 function niceMax(v){if(v<=10)return 10;if(v<=25)return 25;if(v<=50)return 50;if(v<=100)return 100;if(v<=150)return 160;return 230}
 const W=690,H=374,L=69,R=22,T=24,B=54;
-const coordX=i=>L+(i-.42)/(6.58-.42)*(W-L-R);
+const coordX=i=>L+(i-.42)/(5.58-.42)*(W-L-R);
 function curvePoints(vals,xy){const pp=vals.map((v,i)=>({x:xy.X(X[i]),y:xy.Y(v)}));const n=pp.length;if(n<2)return '';const h=[],d=[],m=[];for(let i=0;i<n-1;i++){h[i]=pp[i+1].x-pp[i].x;d[i]=(pp[i+1].y-pp[i].y)/h[i]}
   m[0]=d[0];m[n-1]=d[n-2];for(let i=1;i<n-1;i++)m[i]=(d[i-1]*d[i]<=0)?0:(2*d[i-1]*d[i]/(d[i-1]+d[i]));
   let path=`M${pp[0].x.toFixed(2)},${pp[0].y.toFixed(2)}`;
   for(let i=0;i<n-1;i++){const x0=pp[i].x,x1=pp[i+1].x,dy=pp[i+1].y-pp[i].y;const c1x=x0+h[i]/3,c1y=pp[i].y+h[i]*m[i]/3,c2x=x1-h[i]/3,c2y=pp[i+1].y-h[i]*m[i+1]/3;path+=` C${c1x.toFixed(1)},${c1y.toFixed(1)} ${c2x.toFixed(1)},${c2y.toFixed(1)} ${x1.toFixed(1)},${pp[i+1].y.toFixed(1)}`}
   return path;
 }
-function renderPlot(rawMode){const svg=$(rawMode?'raw':'ranks');svg.replaceChildren();const xmax=rawMode?plotYMax:6.5;const ymin=rawMode?0:.5;const Y=v=>H-B-(v-ymin)/(xmax-ymin)*(H-T-B);const xy={X:coordX,Y};
+function renderPlot(rawMode){const svg=$(rawMode?'raw':'ranks');svg.replaceChildren();const xmax=rawMode?plotYMax:5.5;const ymin=rawMode?0:.5;const Y=v=>H-B-(v-ymin)/(xmax-ymin)*(H-T-B);const xy={X:coordX,Y};
   const ticks=rawMode?([10,25,50,100,160,230].includes(xmax)?{10:2,25:5,50:10,100:20,160:40,230:50}[xmax]:20):1;
   for(let tick=rawMode?0:1;tick<=xmax+1e-5;tick+=ticks){const yy=Y(tick);if(yy<T-2)continue;svgEl(svg,'line',{x1:L,y1:yy,x2:W-R,y2:yy,class:'gridline'});svgEl(svg,'text',{x:L-11,y:yy+5,'text-anchor':'end',class:'tick'},tick)}
-  for(let i=1;i<=6;i++){const px=coordX(i);svgEl(svg,'text',{x:px,y:H-B+25,'text-anchor':'middle',class:'tick'},i)}
+  for(let i=1;i<=X.length;i++){const px=coordX(i);svgEl(svg,'text',{x:px,y:H-B+25,'text-anchor':'middle',class:'tick'},i)}
   svgEl(svg,'line',{x1:L,y1:T,x2:L,y2:H-B,class:'axis'});svgEl(svg,'line',{x1:L,y1:H-B,x2:W-R,y2:H-B,class:'axis'});
   svgEl(svg,'text',{x:(L+W-R)/2,y:H-8,'text-anchor':'middle',class:'axisname'},rawMode?'X':'R(X)');svgEl(svg,'text',{x:22,y:(T+H-B)/2,transform:`rotate(-90 22 ${(T+H-B)/2})`,'text-anchor':'middle',class:'axisname'},rawMode?'Y':'R(Y)');
   if(rawMode){
     // The moving line connects observations and is not a fitted regression curve.
     svgEl(svg,'path',{d:curvePoints(y,xy),fill:'none',stroke:'#75afe9','stroke-width':2.6,'stroke-dasharray':'7 7','stroke-linecap':'round',opacity:.65});
-    for(let i=0;i<6;i++)if(trace[i].length>1){for(let j=1;j<trace[i].length;j++){const op=.08+.36*j/trace[i].length;svgEl(svg,'line',{x1:coordX(i),y1:Y(trace[i][j-1]),x2:coordX(i),y2:Y(trace[i][j]),stroke:i===5?css.orange:css.blue,'stroke-width':3.1,'stroke-linecap':'round',opacity:op})}}
-  }else{svgEl(svg,'line',{x1:coordX(1),y1:Y(1),x2:coordX(6),y2:Y(6),stroke:'#99d2cb','stroke-width':2.3,'stroke-dasharray':'6 9'});
+    for(let i=0;i<X.length;i++)if(trace[i].length>1){for(let j=1;j<trace[i].length;j++){const op=.08+.36*j/trace[i].length;svgEl(svg,'line',{x1:coordX(i),y1:Y(trace[i][j-1]),x2:coordX(i),y2:Y(trace[i][j]),stroke:i===X.length-1?css.orange:css.blue,'stroke-width':3.1,'stroke-linecap':'round',opacity:op})}}
+  }else{svgEl(svg,'line',{x1:coordX(1),y1:Y(1),x2:coordX(5),y2:Y(5),stroke:'#99d2cb','stroke-width':2.3,'stroke-dasharray':'6 9'});
   }
-  for(let i=0;i<6;i++){
-    const ry=rawMode?null:rank(y),px=coordX(i+1),py=Y(rawMode?y[i]:ry[i]),isLast=i===5;const switched=!rawMode&&Math.abs(ry[i]-(i+1))>1e-8;
+  for(let i=0;i<X.length;i++){
+    const ry=rawMode?null:rank(y),px=coordX(i+1),py=Y(rawMode?y[i]:ry[i]),isLast=i===X.length-1;const switched=!rawMode&&Math.abs(ry[i]-(i+1))>1e-8;
     if(!rawMode&&performance.now()<pulsingUntil)svgEl(svg,'circle',{cx:px,cy:py,r:23,fill:'none',stroke:css.teal,'stroke-width':2,opacity:.12});
     svgEl(svg,'circle',{cx:px,cy:py,r:rawMode?(isLast?10.7:9.4):16,fill:rawMode?(isLast?css.orange:css.blue):(switched?css.orange:css.teal),class:'point'});
     if(rawMode){const hit=svgEl(svg,'circle',{cx:px,cy:py,r:22,fill:'transparent',class:'hitpoint','data-i':i});svgEl(hit,'title',{},`X=${i+1}，Y=${y[i].toFixed(1)}；上下拖动`)}
     else svgEl(svg,'text',{x:px,y:py+5.4,'text-anchor':'middle',class:'ranknum'},String(i+1));
   }
 }
-function renderSpark(){const svg=$('spark');svg.replaceChildren();svgEl(svg,'rect',{x:0,y:1,width:152,height:56,rx:5,fill:'#f3f8fe'});const Y=v=>49-(v-.58)/(.43)*39;svgEl(svg,'line',{x1:7,y1:Y(1),x2:146,y2:Y(1),stroke:'#b7cdea','stroke-dasharray':'3 4'});if(history.length>=2){const path=history.map((v,i)=>`${i===0?'M':'L'}${(7+i/(Math.max(history.length-1,1))*139).toFixed(1)},${Y(v).toFixed(1)}`).join(' ');svgEl(svg,'path',{d:path,fill:'none',stroke:'#2b77d4','stroke-width':2.4,'stroke-linecap':'round','stroke-linejoin':'round'});const last=history.at(-1);svgEl(svg,'circle',{cx:146,cy:Y(last),r:3.6,fill:css.orange})}else{svgEl(svg,'text',{x:76,y:34,fill:'#93a8c3','text-anchor':'middle','font-size':12},'变化轨迹')}}
-function appendTrace(){for(let i=0;i<6;i++){const seq=trace[i];if(!seq.length||Math.abs(seq.at(-1)-y[i])>.15){seq.push(y[i]);if(seq.length>21)seq.shift()}}}
-function remember(){const r=corr(X,y);if(history.length===0||Math.abs(history.at(-1)-r)>.00045){history.push(r);if(history.length>128){history=history.filter((_,i)=>i%2===0)}}}
-function render(){plotYMax=niceMax(Math.max(...y)*1.11);renderPlot(true);renderPlot(false);$('pearson').textContent=corr(X,y).toFixed(3);$('valueState').textContent=`Y₆ = ${y[5].toFixed(y[5]%1===0?0:1)}`;const rr=rank(y),same=rr.every((a,i)=>Math.abs(a-(i+1))<1e-8);$('rankStatus').innerHTML=same?'始终一致 <span style="font-size:20px">✓</span>':'顺序已变 ↔';$('rankStatus').classList.toggle('changed',!same);$('rankWatch').innerHTML='<span class="rankkey">R(Y)：</span>'+rr.map((v,i)=>`<span class="rank-pill ${Math.abs(v-(i+1))>1e-8?'swapped':''}">${Number.isInteger(v)?v:v.toFixed(1)}</span>`).join('');renderSpark();$('progress').style.width=(progress*100).toFixed(1)+'%'}
+function renderSpark(){const svg=$('spark');svg.replaceChildren();svgEl(svg,'rect',{x:0,y:1,width:152,height:56,rx:5,fill:'#f3f8fe'});const lo=Math.min(0,...history),hi=1,span=Math.max(.15,hi-lo);const Y=v=>49-(v-lo)/span*39;svgEl(svg,'line',{x1:7,y1:Y(1),x2:146,y2:Y(1),stroke:'#b7cdea','stroke-dasharray':'3 4'});if(history.length>=2){const path=history.map((v,i)=>`${i===0?'M':'L'}${(7+i/(Math.max(history.length-1,1))*139).toFixed(1)},${Y(v).toFixed(1)}`).join(' ');svgEl(svg,'path',{d:path,fill:'none',stroke:'#2b77d4','stroke-width':2.4,'stroke-linecap':'round','stroke-linejoin':'round'});const last=history.at(-1);svgEl(svg,'circle',{cx:146,cy:Y(last),r:3.6,fill:css.orange})}else{svgEl(svg,'text',{x:76,y:34,fill:'#93a8c3','text-anchor':'middle','font-size':12},'变化轨迹')}}
+function appendTrace(){for(let i=0;i<X.length;i++){const seq=trace[i];if(!seq.length||Math.abs(seq.at(-1)-y[i])>.15){seq.push(y[i]);if(seq.length>21)seq.shift()}}}
+function remember(){const r=corr(X,y);if(!Number.isFinite(r))return;if(history.length===0||Math.abs(history.at(-1)-r)>.00045){history.push(r);if(history.length>128){history=history.filter((_,i)=>i%2===0)}}}
+function render(){plotYMax=niceMax(Math.max(...y)*1.11);renderPlot(true);renderPlot(false);const rp=corr(X,y);$('pearson').textContent=Number.isFinite(rp)?rp.toFixed(3):'—';const displayPoint=selectedPoint===null?X.length-1:selectedPoint; $('valueState').textContent=`Y${String.fromCharCode(8320+displayPoint+1)} = ${y[displayPoint].toFixed(y[displayPoint]%1===0?0:1)}`;const rr=rank(y),same=rr.every((a,i)=>Math.abs(a-(i+1))<1e-8);$('rankStatus').innerHTML=same?'始终一致 <span style="font-size:20px">✓</span>':'顺序已变 ↔';$('rankStatus').classList.toggle('changed',!same);$('rankWatch').innerHTML='<span class="rankkey">R(Y)：</span>'+rr.map((v,i)=>`<span class="rank-pill ${Math.abs(v-(i+1))>1e-8?'swapped':''}">${Number.isInteger(v)?v:v.toFixed(1)}</span>`).join('');renderSpark();$('progress').style.width=(progress*100).toFixed(1)+'%'}
 
 function clearPlayback(){if(raf)cancelAnimationFrame(raf);raf=0;running=null;$('play').textContent='▶ 自动演示'}
 const DUR1=4200,HOLD1=630,DUR2=4600,HOLD2=650,DUR3=4600,DURSWAP=2500;
@@ -111,27 +111,27 @@ function yAt(mode,t){
   return blend(STAGE2,STAGE3,(t-DUR1-HOLD1-DUR2-HOLD2)/DUR3);
 }
 function updatePhase(phase){
-  const names={one:'阶段 01 · 单点变化',two:'阶段 02 · 非线性关联',three:'阶段 02 · 非线性关联',swap:'拓展 · 交换第5、6名'};
+  const names={one:'阶段 01 · 单点变化',two:'阶段 02 · 非线性关联',three:'阶段 03 · 非线性关联',swap:'拓展 · 交换第4、5名'};
   $('phaseState').textContent=names[phase]||'正在演示';
   pulsingUntil=performance.now()+380;
 }
 function start(mode){
-  clearPlayback();
+  clearPlayback();selectedPoint=null;
   const base=mode==='two'?STAGE1:mode==='three'?STAGE2:START;
-  for(let i=0;i<6;i++)y[i]=base[i];
-  trace=Array.from({length:6},(_,i)=>[y[i]]);history=[];remember();lastTraceMs=0;
+  for(let i=0;i<X.length;i++)y[i]=base[i];
+  trace=Array.from({length:X.length},(_,i)=>[y[i]]);history=[];remember();lastTraceMs=0;
   changed=true;
   const total={all:totalMain,one:DUR1,two:DUR2,three:DUR3,swap:DURSWAP}[mode];
   running={mode,total,paused:false,elapsed:0,start:null,oldPhase:''};
   $('play').textContent='Ⅱ 暂停';progress=0;
-  $('swapHelp').textContent=mode==='swap'?'正在交换第5、6个观测值：观察右侧秩次何时发生变化。':'交换第5、6个观测值的大小顺序，观察右侧秩次图。';
+  $('swapHelp').textContent=mode==='swap'?'正在交换第4、5个观测值：观察右侧秩次何时发生变化。':'交换第4、5个观测值的大小顺序，观察右侧秩次图。';
   updatePhase(mode==='all'?'one':mode);render();raf=requestAnimationFrame(frame);
 }
 function frame(now){
   const a=running;if(!a||a.paused)return;
   if(a.start===null)a.start=now-a.elapsed;
   const t=clamp(now-a.start,0,a.total);a.elapsed=t;
-  const vals=yAt(a.mode,t);for(let i=0;i<6;i++)y[i]=vals[i];
+  const vals=yAt(a.mode,t);for(let i=0;i<X.length;i++)y[i]=vals[i];
   let phase=a.mode;
   if(a.mode==='all')phase=t<=DUR1+HOLD1?'one':t<=DUR1+HOLD1+DUR2+HOLD2?'two':'three';
   if(phase!==a.oldPhase){a.oldPhase=phase;updatePhase(phase)}
@@ -139,16 +139,16 @@ function frame(now){
   if(now-lastTraceMs>48){appendTrace();remember();lastTraceMs=now}
   render();
   if(t<a.total){raf=requestAnimationFrame(frame);return}
-  raf=0;running=null;progress=1;trace=Array.from({length:6},()=>[]);remember();render();
+  raf=0;running=null;progress=1;trace=Array.from({length:X.length},()=>[]);remember();render();
   const isSwap=a.mode==='swap';
   $('phaseState').textContent=isSwap?'顺序交换完成':a.mode==='all'?'演示完成':`阶段 ${a.mode==='one'?'01':a.mode==='two'?'02':'03'} 完成`;
   $('play').textContent='↻ 重播自动演示';
   if(isSwap){
-    $('swapHelp').textContent='两个点交叉，R(Y) 从 1,2,3,4,5,6 变为 1,2,3,4,6,5；右侧高亮变化的秩次。';
-    $('takeaway').innerHTML='当第5、6个观测值真的交换大小顺序时，<b>秩次也随之改变。</b>';
+    $('swapHelp').textContent='两个点交叉，R(Y) 从 1,2,3,4,5 变为 1,2,3,5,4；右侧高亮变化的秩次。';
+    $('takeaway').innerHTML='当第4、5个观测值真的交换大小顺序时，<b>秩次也随之改变。</b>';
   }else{
-    $('swapHelp').textContent='交换第5、6个观测值的大小顺序，观察右侧秩次图。';
-    $('takeaway').innerHTML='散点变化时，<b>Pearson系数不断改变</b>，而六个观测值的大小顺序始终一致。';
+    $('swapHelp').textContent='交换第4、5个观测值的大小顺序，观察右侧秩次图。';
+    $('takeaway').innerHTML='散点变化时，<b>Pearson系数不断改变</b>，而五个观测值的大小顺序始终一致。';
   }
 }
 function togglePlay(){
@@ -158,15 +158,15 @@ function togglePlay(){
   else{a.paused=false;a.start=null;$('play').textContent='Ⅱ 暂停';raf=requestAnimationFrame(frame)}
 }
 function reset(){
-  clearPlayback();for(let i=0;i<6;i++)y[i]=START[i];trace=Array.from({length:6},()=>[]);history=[];progress=0;changed=false;
+  clearPlayback();selectedPoint=null;for(let i=0;i<X.length;i++)y[i]=START[i];trace=Array.from({length:X.length},()=>[]);history=[];progress=0;changed=false;
   $('phaseState').textContent='准备开始';
-  $('swapHelp').textContent='交换第5、6个观测值的大小顺序，观察右侧秩次图。';
+  $('swapHelp').textContent='交换第4、5个观测值的大小顺序，观察右侧秩次图。';
   $('takeaway').innerHTML='请先观察两幅图：原始数值改变时，<b>大小顺序是否仍然一致？</b>';
   render();
 }
 $('play').addEventListener('click',togglePlay);$('one').addEventListener('click',()=>start('one'));$('two').addEventListener('click',()=>start('two'));$('three').addEventListener('click',()=>start('three'));$('swap').addEventListener('click',()=>start('swap'));$('restore').addEventListener('click',reset);$('reset').addEventListener('click',reset);
-const svg=$('raw');svg.addEventListener('pointerdown',e=>{let target=e.target.closest('[data-i]');if(!target)return;clearPlayback();let i=Number(target.getAttribute('data-i')),rect=svg.getBoundingClientRect();drag={i,sy:e.clientY,start:y[i],range:plotYMax,height:rect.height};svg.setPointerCapture(e.pointerId);changed=true;$('phaseState').textContent='手动拖动中';trace=Array.from({length:6},(_,k)=>[y[k]]);history=[];remember();e.preventDefault()});
-svg.addEventListener('pointermove',e=>{if(!drag)return;let i=drag.i,dy=drag.sy-e.clientY, sensitivity=Math.max(.52, (220-drag.start)/Math.max(160,drag.height*.8)), isMonotone=y.every((v,j)=>j===0||v>y[j-1]),low=isMonotone?(i===0?.15:y[i-1]+.12):.15,high=isMonotone?(i===5?220:y[i+1]-.12):220;const next=clamp(drag.start+dy*sensitivity,low,high);y[i]=next;appendTrace();remember();render();e.preventDefault()});
+const svg=$('raw');svg.addEventListener('pointerdown',e=>{let target=e.target.closest('[data-i]');if(!target)return;clearPlayback();let i=Number(target.getAttribute('data-i')),rect=svg.getBoundingClientRect();drag={i,sy:e.clientY,start:y[i],range:plotYMax,height:rect.height};selectedPoint=i;svg.setPointerCapture(e.pointerId);changed=true;$('phaseState').textContent='手动拖动中';trace=Array.from({length:X.length},(_,k)=>[y[k]]);history=[];remember();e.preventDefault()});
+svg.addEventListener('pointermove',e=>{if(!drag)return;let i=drag.i,dy=drag.sy-e.clientY, sensitivity=Math.max(.52, (220-drag.start)/Math.max(160,drag.height*.8));const next=clamp(drag.start+dy*sensitivity,.15,220);y[i]=next;appendTrace();remember();render();e.preventDefault()});
 function endDrag(){if(!drag)return;drag=null;$('phaseState').textContent='手动改变数值';$('takeaway').innerHTML='拖动之后，<b>Pearson系数可能改变</b>；右侧秩次图会根据实际大小顺序正确更新。'}
 svg.addEventListener('pointerup',endDrag);svg.addEventListener('pointercancel',endDrag);svg.addEventListener('lostpointercapture',endDrag);
 $('full').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch(e){$('full').textContent='可按 F11 全屏'}});document.addEventListener('fullscreenchange',()=>$('full').textContent=document.fullscreenElement?'退出全屏':'全屏展示');
