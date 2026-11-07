@@ -1,177 +1,201 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#1d59ab">
-<title>数值变了，顺序变了吗？｜三阶段交互实验</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#1d59ab" />
+<title>非线性关联与秩关系｜交互式统计实验</title>
 <style>
 :root{--navy:#123c79;--blue:#225fbb;--blue2:#377fdb;--teal:#108e88;--orange:#df882b;--text:#193a68;--muted:#6e829f;--line:#d9e5f4;--pale:#f2f7fd;--paper:#fff;--font:"Microsoft YaHei","微软雅黑","PingFang SC","Noto Sans CJK SC",sans-serif}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#f8fbff;color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}button{font:inherit;cursor:pointer}button:focus-visible{outline:3px solid #f8ba5a;outline-offset:3px}[hidden]{display:none!important}
-.top{height:60px;padding:0 clamp(22px,3.5vw,64px);display:flex;align-items:center;justify-content:space-between;color:#fff;background:linear-gradient(112deg,#327bc9,#1c55a4 70%,#17478c);box-shadow:0 3px 12px #28589b1b}.top .brand{font-weight:750;letter-spacing:.04em;font-size:20px}.top .brand span{font-size:14px;font-weight:400;opacity:.85;margin-left:13px}.full{background:#ffffff16;border:1px solid #ffffff85;border-radius:6px;color:#fff;padding:7px 15px;font-size:14px}
-.main{max-width:1530px;padding:19px clamp(17px,2.3vw,36px) 20px;margin:auto}.titleline{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:17px}h1{font-size:clamp(31px,3vw,42px);line-height:1.25;letter-spacing:.012em;margin:0 0 7px;font-weight:800}.sub{color:#627997;margin:0;font-size:17px}
-
-.figures{display:grid;grid-template-columns:1fr 1fr;gap:18px}.figure{min-width:0;background:var(--paper);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 7px 22px #2e6db313}.fig-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:17px 22px 7px}.fig-head .fig-title{font-weight:800;font-size:22px;display:flex;align-items:center;gap:11px}.fig-head .fig-title:before{content:"";height:23px;width:5px;background:var(--blue2);border-radius:3px}.figure.rank .fig-head .fig-title:before{background:var(--teal)}.fig-head .fig-note{font-size:13px;color:#7588a4}.plot{height:clamp(300px,25.5vw,372px);padding:0 11px}.plot svg{width:100%;height:100%;display:block;touch-action:none;user-select:none}.axis{stroke:#667fa2;stroke-width:1.55}.gridline{stroke:#e9eff8;stroke-width:1}.tick{font-size:14px;fill:#7d8ea8;font-family:var(--font)}.axisname{font-size:16px;fill:#59749b;font-family:var(--font)}.point{stroke:white;stroke-width:2.6;filter:drop-shadow(0 1px 2px #1a559144)}.raw .hitpoint{cursor:ns-resize}.ranknum{font-family:var(--font);font-size:14px;fill:white;font-weight:800;pointer-events:none}.metric{min-height:99px;margin:0 23px;padding:15px 1px;border-top:1px solid #e7edf5;display:flex;align-items:center;justify-content:space-between;gap:15px}.metric strong{display:block;font-size:18px}.metric .desc{color:#7085a2;font-size:13px;margin-top:5px}.pearson-area{display:flex;align-items:center;gap:15px}.pearson-number{font-size:clamp(36px,3.35vw,53px);font-weight:850;line-height:1.1;color:var(--blue);font-variant-numeric:tabular-nums;letter-spacing:-.03em}.spark{width:150px;height:53px;opacity:.92}.rankstatus{font-size:23px;color:var(--teal);font-weight:800;white-space:nowrap}.rankstatus.changed{color:#cd771d}.rankwatch{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:7px}.rank-pill{display:inline-flex;align-items:center;justify-content:center;min-width:25px;height:24px;padding:1px 4px;border:1px solid #c4dedb;border-radius:5px;color:#087d78;background:#eef9f7;font-weight:800;font-size:13px}.rank-pill.swapped{background:#fff1dd;border-color:#e8c38f;color:#af6a0d}.rankkey{font-size:12px;color:#6d819d;margin-right:2px}.rankhint{font-size:13px;color:#758da5;margin-top:5px}
-.controls{margin-top:14px;background:white;border:1px solid var(--line);border-radius:11px;padding:15px 23px 13px;box-shadow:0 4px 17px #2e6db30b}.ctrlrow{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}.current{display:flex;align-items:center;gap:11px;flex-wrap:wrap}.current .caption{font-size:17px;font-weight:750}.current output{font-size:22px;font-weight:800;color:#c77720;font-variant-numeric:tabular-nums}.current .stage{font-size:14px;color:#607996}.buttons{display:flex;flex-wrap:wrap;align-items:center;gap:10px}.btn{border:1px solid var(--blue);border-radius:7px;background:var(--blue);color:#fff;padding:10px 15px;font-size:16px;font-weight:700;min-height:44px}.btn:hover{filter:brightness(.98)}.btn.secondary{background:#fff;color:#215bb1;border-color:#b7cbea}.btn.tiny{font-size:14px;padding:10px 12px}.btn:disabled{cursor:default;opacity:.5}.btn.extension{background:#fff7e9;border-color:#ecc48b;color:#a5620b}.btn.extension:hover{background:#ffefcf}.extension-row{border-top:1px solid #e5eef7;margin-top:13px;padding-top:12px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}.extension-copy{font-size:14px;color:#617895;line-height:1.4}.extension-copy strong{color:#1b477c}.extension-controls{display:flex;gap:9px;flex-wrap:wrap}.swap-status{font-weight:700;color:#a66716}.stage-note{font-weight:750;color:#416b94}
-.progress-outer{height:7px;background:#e5eefb;border-radius:999px;margin:15px 0 12px;overflow:hidden}.progress-inner{height:100%;width:0%;background:linear-gradient(90deg,#2e7ee0,#0faaa0);transition:width .11s linear;border-radius:999px}.bottomrow{display:flex;gap:20px;align-items:center;justify-content:space-between}.takeaway{font-size:17px;line-height:1.55;color:#285080}.takeaway b{color:#147b7b}.footnote{font-size:12px;color:#8a99ac;margin:10px 2px 0}.smallwave{animation:ringfade .6s ease-out 1}@keyframes ringfade{0%{opacity:.5}100%{opacity:0}}
-
-@media(max-width:1140px){.titleline{align-items:start}.fig-head .fig-note{display:none}.spark{width:106px}.metric strong{font-size:16px}.metric .desc{font-size:12px}.buttons{gap:5px}.btn{font-size:14px;padding:9px 11px}}
-@media(max-width:820px){.figures{grid-template-columns:1fr}.plot{height:330px}.top .brand span{display:none}.titleline{display:block}.extension-row{align-items:start}.extension-controls{width:100%}.extension-controls .btn{flex:1}.controls{padding:15px}.bottomrow{align-items:start;flex-direction:column;gap:12px}.buttons{margin-top:3px}}
-@media(max-width:475px){.main{padding:16px 11px}.top{padding:0 13px}.top .brand{font-size:17px}.fig-head{padding:14px 14px 5px}.fig-head .fig-title{font-size:19px}.plot{padding:0;height:270px}.metric{padding:12px 0;margin:0 14px}.pearson-number{font-size:34px}.spark{width:86px}.rankstatus{font-size:20px}.buttons{width:100%}.btn{flex:1}.takeaway{font-size:15px}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#f8fbff;color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid #f8ba5a;outline-offset:3px}button:disabled{cursor:not-allowed;opacity:.45}[hidden]{display:none!important}
+.top{height:60px;padding:0 clamp(22px,3.5vw,64px);display:flex;align-items:center;justify-content:space-between;color:#fff;background:linear-gradient(112deg,#327bc9,#1c55a4 70%,#17478c);box-shadow:0 3px 12px #28589b1b}.top .brand{font-weight:750;letter-spacing:.04em;font-size:20px}.top .brand span{font-size:14px;font-weight:400;opacity:.85;margin-left:13px}.full{background:#ffffff16;border:1px solid #ffffff85;border-radius:6px;color:#fff;padding:7px 15px;font-size:14px;min-height:35px}
+.main{max-width:1530px;padding:19px clamp(17px,2.3vw,36px) 28px;margin:auto}.titleline{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:14px}h1{font-size:clamp(28px,2.6vw,39px);line-height:1.25;letter-spacing:.012em;margin:0 0 6px;font-weight:800}.sub{color:#627997;margin:0;font-size:16px}.smalltag{font-size:13px;color:#6f85a2;white-space:nowrap}
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 12px}.tab{min-width:0;background:#fff;border:1px solid #cdddf1;color:#375e8f;border-radius:8px;min-height:48px;padding:8px 10px;text-align:center;font-size:16px;font-weight:750;transition:background .15s,border-color .15s}.tab:hover{background:#f0f6fd}.tab.active{background:#e5f0fd;color:#1856aa;border-color:#6e9dd9;box-shadow:inset 0 0 0 1px #82b1e9}.tab small{font-size:11px;font-weight:500;display:block;opacity:.8;margin-top:2px}
+.scene-strip{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:#edf5ff;border:1px solid #d4e5f9;border-radius:9px;padding:10px 16px;margin-bottom:13px}.scene-main{display:flex;align-items:baseline;gap:13px;flex-wrap:wrap}.scene-main strong{font-size:17px;color:#204e88}.formula{font-family:Georgia,"Times New Roman",serif;font-size:17px;color:#315d94;letter-spacing:.01em}.scene-strip .disclaimer{font-size:12px;color:#6b829e}
+.figures{display:grid;grid-template-columns:1fr 1fr;gap:18px}.figure{min-width:0;background:var(--paper);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 7px 22px #2e6db313}.fig-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 22px 7px}.fig-head .fig-title{font-weight:800;font-size:21px;display:flex;align-items:center;gap:11px}.fig-head .fig-title:before{content:"";height:23px;width:5px;background:var(--blue2);border-radius:3px}.figure.rank .fig-head .fig-title:before{background:var(--teal)}.fig-note{font-size:12px;color:#7588a4}.plot{height:clamp(280px,25vw,350px);padding:0 11px;position:relative}.plot svg{width:100%;height:100%;display:block;user-select:none;touch-action:none}.axis{stroke:#667fa2;stroke-width:1.5}.gridline{stroke:#e9eff8;stroke-width:1}.tick{font-size:13px;fill:#7d8ea8;font-family:var(--font)}.axisname{font-size:16px;fill:#59749b;font-family:var(--font)}.point{stroke:#fff;stroke-width:1.15;filter:drop-shadow(0 1px 1px #1a559122)}.rank-mask{position:absolute;inset:2px 11px 3px;background:linear-gradient(145deg,#f6fbff,#fff);display:flex;align-items:center;justify-content:center;border-radius:7px;z-index:2;text-align:center}.mask-inner{max-width:315px;padding:18px}.mask-circle{width:52px;height:52px;border:1px solid #d1e3f1;border-radius:50%;margin:0 auto 11px;color:#6da3c8;display:flex;justify-content:center;align-items:center;font-size:28px}.mask-inner strong{font-size:20px;display:block;margin-bottom:8px}.mask-inner p{margin:0;color:#6b819d;line-height:1.7;font-size:14px}
+.metric{min-height:98px;margin:0 23px;padding:14px 1px;border-top:1px solid #e7edf5;display:flex;align-items:center;justify-content:space-between;gap:10px}.metric strong{display:block;font-size:18px}.metric .desc{color:#7085a2;font-size:13px;margin-top:5px;line-height:1.35}.pearson-area{display:flex;align-items:center;gap:13px}.pearson-number,.rank-number{font-size:clamp(35px,3.15vw,52px);font-weight:850;line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:-.03em}.pearson-number{color:var(--blue)}.rank-number{color:var(--teal)}.spark{width:125px;height:53px;opacity:.9}.rank-result{display:flex;align-items:center;gap:12px}.rank-summary{font-size:21px;font-weight:800;color:var(--teal);text-align:right}.rank-summary.muted{color:#94a4b8;font-weight:600;font-size:18px}
+.controls{margin-top:14px;background:white;border:1px solid var(--line);border-radius:11px;padding:16px 23px 15px;box-shadow:0 4px 17px #2e6db30b}.ctrl-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.stage-info{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.stage-label{font-size:16px;font-weight:800}.stage-status{color:#b66f1f;font-weight:750}.buttons{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.btn{border:1px solid var(--blue);border-radius:7px;background:var(--blue);color:#fff;padding:9px 14px;font-size:15px;font-weight:700;min-height:42px}.btn:hover:not(:disabled){filter:brightness(.97)}.btn.secondary{color:#215bb1;background:#fff;border-color:#b7cbea}.btn.teal{background:#087f79;border-color:#087f79}.btn.warm{background:#fff7e9;border-color:#e9be84;color:#a5620b}.btn.small{font-size:13px;padding:8px 11px;min-height:36px}.progress{height:6px;background:#e5eefb;border-radius:100px;overflow:hidden;margin:12px 0}.progress > div{height:100%;background:linear-gradient(90deg,#2e7ee0,#0faaa0);width:0%;transition:width .06s linear}
+.control-grid{display:grid;grid-template-columns:minmax(280px,1.3fr) minmax(250px,.9fr);gap:20px;align-items:center;padding:5px 0 3px}.field-title{display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:750;margin-bottom:7px}.field-title output{color:#2162b9;font-size:20px;font-weight:850;font-variant-numeric:tabular-nums}.range-wrap{display:flex;align-items:center;gap:15px}.range-wrap input{flex:1;accent-color:#2b74d0;height:25px;cursor:pointer}.range-ends{display:flex;justify-content:space-between;color:#8a9aaf;font-size:12px;margin-top:1px}.sample-btns{display:flex;gap:5px;flex-wrap:wrap}.n-btn{min-width:53px;min-height:34px;background:#fff;color:#41678e;border:1px solid #c5d8ee;border-radius:7px;font-weight:750}.n-btn.active{background:#e5f0fd;border-color:#679bde;color:#1959aa}.explore{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;border-top:1px solid #e7edf5;margin-top:12px;padding-top:13px}.explore .teacher-tip{font-size:15px;line-height:1.5;color:#295780;flex:1;min-width:250px}.explore .teacher-tip b{color:#137e79}.check{display:flex;align-items:center;gap:7px;white-space:nowrap;color:#587694;font-size:14px;cursor:pointer}.check input{accent-color:#2673c5;width:16px;height:16px}.footnote{color:#8898ae;font-size:12px;line-height:1.7;margin:10px 3px 0}
+.clinical-steps{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0 7px;flex-wrap:wrap}.clinical-help{font-size:14px;color:#496b91;max-width:650px;line-height:1.55}
+.hint-chip{font-size:12px;color:#7a90ac;border:1px solid #d6e4f3;padding:4px 7px;border-radius:5px;background:#f8fbff}
+@media(max-width:1100px){.fig-head .fig-note{display:none}.metric{margin:0 16px}.spark{width:86px}.pearson-number,.rank-number{font-size:39px}.scene-strip{gap:6px}}
+@media(max-width:820px){.figures{grid-template-columns:1fr}.plot{height:330px}.tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.control-grid{grid-template-columns:1fr}.top .brand span{display:none}.titleline{align-items:start}.controls{padding:14px}.scene-main strong{font-size:15px}}
+@media(max-width:450px){.main{padding:14px 11px}.top{padding:0 12px}.top .brand{font-size:17px}.fig-head{padding:14px 13px 5px}.fig-head .fig-title{font-size:18px}.plot{height:270px;padding:0}.metric{padding:11px 0;margin:0 13px}.pearson-number,.rank-number{font-size:33px}.spark{width:75px}.rank-summary{font-size:16px}.tab{font-size:14px}.buttons{width:100%}.btn{flex:1}.control-grid{gap:12px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important}}
 </style>
 </head>
 <body>
 <header class="top"><div class="brand">非参数统计 <span>交互式统计实验</span></div><button class="full" id="full" type="button">全屏展示</button></header>
 <main class="main">
-  <div class="titleline"><div><h1>数值变了，顺序变了吗？</h1><p class="sub">观察两列数据的变化：线性关联在变，大小顺序会变吗？</p></div></div>
-  <section class="figures">
-    <article class="figure">
-      <div class="fig-head"><div class="fig-title">原始数值 X 与 Y</div><span class="fig-note">五个散点均可上下拖动，允许改变秩次</span></div>
-      <div class="plot raw"><svg id="raw" viewBox="0 0 690 374" role="img" aria-label="原始散点，蓝色点可上下拖动；原始数值变化时Pearson相关系数实时计算"></svg></div>
-      <div class="metric"><div><strong>Pearson 相关系数</strong><div class="desc">原始数值之间的线性关联</div></div><div class="pearson-area"><svg class="spark" id="spark" viewBox="0 0 152 58" aria-label="Pearson系数在演示过程中的变化曲线"></svg><output class="pearson-number" id="pearson">1.000</output></div></div>
-    </article>
-    <article class="figure rank">
-      <div class="fig-head"><div class="fig-title">大小顺序（秩次）</div><span class="fig-note">1—5 对应的秩次</span></div>
-      <div class="plot"><svg id="ranks" viewBox="0 0 690 374" role="img" aria-label="秩次图，五个编号点根据原始数据大小顺序实时变化"></svg></div>
-      <div class="metric"><div><strong>大小顺序监测</strong><div class="rankwatch" id="rankWatch"><span class="rankkey">R(Y)：</span><span class="rank-pill">1</span><span class="rank-pill">2</span><span class="rank-pill">3</span><span class="rank-pill">4</span><span class="rank-pill">5</span></div></div><div class="rankstatus" id="rankStatus">始终一致 <span style="font-size:20px">✓</span></div></div>
-    </article>
-  </section>
-  <section class="controls" aria-label="课堂演示控制">
-    <div class="ctrlrow"><div class="current"><span class="caption">演示状态</span><output id="phaseState" aria-live="polite">准备开始</output><span class="stage" id="valueState">Y₅ = 5</span></div><div class="buttons">
-      <button class="btn" type="button" id="play">▶ 自动演示</button>
-      <button class="btn secondary tiny" type="button" id="one">回放 01</button>
-      <button class="btn secondary tiny" type="button" id="two">回放 02</button>
-      <button class="btn secondary tiny" type="button" id="three">回放 03</button>
-      <button class="btn secondary tiny" type="button" id="reset">↺ 重置</button>
-    </div></div>
-    <div class="progress-outer" aria-label="动画进度"><div class="progress-inner" id="progress"></div></div>
-    <div class="bottomrow"><div class="takeaway" id="takeaway">请先观察两幅图：原始数值改变时，<b>大小顺序是否仍然一致？</b></div></div>
-    <div class="extension-row"><div class="extension-copy"><strong>拓展实验 · 顺序真的改变时会怎样？</strong><br><span id="swapHelp">交换第4、5个观测值的大小顺序，观察右侧秩次图。</span></div><div class="extension-controls"><button class="btn extension" type="button" id="swap">⇄ 交换4、5的顺序</button><button class="btn secondary tiny" type="button" id="restore">恢复顺序</button></div></div>
-  </section>
-  <p class="footnote"></p>
+ <div class="titleline"><div><h1>明明有关系，为什么 Pearson 却很小？</h1><p class="sub">从实际研究问题出发，观察非线性曲线，探索两个变量的大小顺序。</p></div><span class="smalltag" id="countTop">模拟数据 · 100个观测对象</span></div>
+ <nav class="tabs" aria-label="选择实验场景">
+  <button class="tab active" data-scene="clinical" type="button">脑健康研究<small>海马体积 × 认知评分</small></button>
+  <button class="tab" data-scene="power" type="button">幂函数<small>单调递增 · 幂律曲线</small></button>
+  <button class="tab" data-scene="exp" type="button">指数函数<small>单调递增 · 指数曲线</small></button>
+  <button class="tab" data-scene="double" type="button">双向弯曲<small>单调递增 · 非线性曲线</small></button>
+ </nav>
+ <div class="scene-strip"><div class="scene-main"><strong id="sceneTitle">海马体积与MMSE评分（模拟）</strong><span class="formula" id="formula"></span></div><span class="disclaimer" id="disclaimer">教学模拟数据，并非真实临床研究结果</span></div>
+ <section class="figures">
+  <article class="figure">
+   <div class="fig-head"><div class="fig-title" id="rawTitle">原始数据：海马体积与MMSE</div><span class="fig-note" id="rawNote">蓝色散点 · 虚线为平滑模拟趋势</span></div>
+   <div class="plot"><svg id="raw" viewBox="0 0 690 374" role="img" aria-label="原始变量散点图，参数调整后实时更新"></svg></div>
+   <div class="metric"><div><strong>Pearson 相关系数</strong><div class="desc">衡量原始变量的线性关联</div></div><div class="pearson-area"><svg class="spark" id="spark" viewBox="0 0 152 58" aria-label="Pearson相关系数变化轨迹"></svg><output class="pearson-number" id="pearson" aria-live="polite">—</output></div></div>
+  </article>
+  <article class="figure rank">
+   <div class="fig-head"><div class="fig-title">两个变量的秩关系</div><span class="fig-note" id="rankNote">先观察左侧，再探索大小顺序</span></div>
+   <div class="plot"><svg id="ranks" viewBox="0 0 690 374" role="img" aria-label="X的秩与Y的秩的散点图"></svg><div class="rank-mask" id="rankMask"><div class="mask-inner"><div class="mask-circle" aria-hidden="true">?</div><strong>大小顺序也会改变吗？</strong><p>先观察原始散点图和 Pearson 系数，<br>然后点击下方「观察秩关系」。</p></div></div></div>
+   <div class="metric"><div><strong id="rankMetricTitle">大小顺序观察</strong><div class="desc" id="rankDescription">这组数据的秩之间是什么关系？</div></div><div class="rank-result"><output class="rank-number" id="spearman" hidden>—</output><div class="rank-summary muted" id="rankSummary">待探索</div></div></div>
+  </article>
+ </section>
+ <section class="controls" aria-label="课堂演示控制">
+  <div class="ctrl-top"><div class="stage-info"><span class="stage-label">演示状态</span><output id="phaseState" class="stage-status" aria-live="polite">脑健康模拟</output><span class="hint-chip" id="pointInfo">100个观测对象</span></div>
+   <div class="buttons"><button class="btn" id="play" type="button">▶ 自动演示</button><button class="btn secondary" id="mildCurve" type="button">温和曲线</button><button class="btn secondary" id="example" type="button">强非线性</button><button class="btn secondary" id="reset" type="button">↺ 重置</button></div>
+  </div>
+  <div class="progress" id="mathProgress" aria-label="动画播放进度"><div id="progressFill"></div></div>
+  <div class="clinical-steps" id="clinicalSteps" hidden>
+   <div class="clinical-help">当前为固定的100名模拟受试者数据。先观察散点，再按步骤揭晓趋势与Pearson结果；本场景不改变数据。</div>
+   <div class="buttons"><button class="btn secondary" type="button" id="showTrend">① 显示模拟趋势</button><button class="btn secondary" type="button" id="showClinicalPearson">② 显示Pearson</button></div>
+  </div>
+  <div class="control-grid" id="mathControls">
+   <div><div class="field-title"><label for="curveInput" id="sliderLabel">模拟曲线弯曲程度</label><output id="kValue">4.0</output></div><div class="range-wrap"><input id="curveInput" type="range" min="1" max="8" value="4" step="0.1" aria-label="曲线弯曲参数" /></div><div class="range-ends"><span id="kMinLabel">较平缓</span><span id="kMaxLabel">更弯曲</span></div></div>
+   <div><div class="field-title"><span>样本数量</span><span class="hint-chip" id="nHint">脑健康场景固定100人</span></div><div class="sample-btns" id="sampleBtns"><button class="n-btn" data-n="20" type="button">20</button><button class="n-btn active" data-n="80" type="button">80</button><button class="n-btn" data-n="200" type="button">200</button><button class="n-btn" data-n="500" type="button">500</button></div></div>
+  </div>
+  <div class="explore"><div class="teacher-tip" id="takeaway">先观察：<b>海马体积与认知评分一定呈线性关系吗？</b></div>
+   <div class="buttons"><label class="check" title="启用后，可在左图用鼠标改变任一观测对象的Y值"><input type="checkbox" id="manualMode" />自由拖动</label><button class="btn teal small" id="showRank" type="button">观察秩关系</button><button class="btn warm small" id="verify" type="button" disabled>定义后验证</button></div>
+  </div>
+ </section>
+ <p class="footnote" id="footnote">提示：本页所有数据仅用于教学。脑健康场景中的平滑饱和趋势是人为设定的，不代表真实海马体积与MMSE的函数关系。MMSE为0—30分的整数评分，重复得分采用平均秩。自动演示只会在点击后开始。</p>
 </main>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
-const X=[1,2,3,4,5],START=[1,2,3,4,5],STAGE1=[1,2,3,4,200],STAGE2=[42,105,150,182,208],STAGE3=X.map(v=>8+202*Math.pow(v/5,6)),SWAPPED=[1,2,3,5,4];
-const y=START.slice();let running=null,raf=0,drag=null,trace=Array.from({length:X.length},()=>[]),history=[],lastTraceMs=0,pulsingUntil=0,changed=false,progress=0,plotYMax=10,selectedPoint=null;
-const EASE=t=>t*t*(3-2*t),clamp=(z,min,max)=>Math.max(min,Math.min(max,z));
-const css={blue:'#2466c3',teal:'#108e88',orange:'#df882b',grid:'#e9eff7',axis:'#6680a0'};
-const corr=(a,b)=>{const n=a.length,ma=a.reduce((s,v)=>s+v,0)/n,mb=b.reduce((s,v)=>s+v,0)/n;let cov=0,xx=0,yy=0;for(let i=0;i<n;i++){const u=a[i]-ma,v=b[i]-mb;cov+=u*v;xx+=u*u;yy+=v*v}return xx<=1e-12||yy<=1e-12?NaN:cov/Math.sqrt(xx*yy)};
-const rank=a=>{const sorted=a.map((v,i)=>({v,i})).sort((a,b)=>a.v-b.v),out=[];for(let i=0;i<sorted.length;){let j=i+1;while(j<sorted.length&&sorted[j].v===sorted[i].v)j++;for(let k=i;k<j;k++)out[sorted[k].i]=(i+j+1)/2;i=j}return out;};
-function svgEl(parent,tag,attrs={},text){const o=document.createElementNS(NS,tag);for(const [k,v]of Object.entries(attrs))o.setAttribute(k,String(v));if(text!==undefined)o.textContent=text;parent.appendChild(o);return o}
-function niceMax(v){if(v<=10)return 10;if(v<=25)return 25;if(v<=50)return 50;if(v<=100)return 100;if(v<=150)return 160;return 230}
-const W=690,H=374,L=69,R=22,T=24,B=54;
-const coordX=i=>L+(i-.42)/(5.58-.42)*(W-L-R);
-function curvePoints(vals,xy){const pp=vals.map((v,i)=>({x:xy.X(X[i]),y:xy.Y(v)}));const n=pp.length;if(n<2)return '';const h=[],d=[],m=[];for(let i=0;i<n-1;i++){h[i]=pp[i+1].x-pp[i].x;d[i]=(pp[i+1].y-pp[i].y)/h[i]}
-  m[0]=d[0];m[n-1]=d[n-2];for(let i=1;i<n-1;i++)m[i]=(d[i-1]*d[i]<=0)?0:(2*d[i-1]*d[i]/(d[i-1]+d[i]));
-  let path=`M${pp[0].x.toFixed(2)},${pp[0].y.toFixed(2)}`;
-  for(let i=0;i<n-1;i++){const x0=pp[i].x,x1=pp[i+1].x,dy=pp[i+1].y-pp[i].y;const c1x=x0+h[i]/3,c1y=pp[i].y+h[i]*m[i]/3,c2x=x1-h[i]/3,c2y=pp[i+1].y-h[i]*m[i+1]/3;path+=` C${c1x.toFixed(1)},${c1y.toFixed(1)} ${c2x.toFixed(1)},${c2y.toFixed(1)} ${x1.toFixed(1)},${pp[i+1].y.toFixed(1)}`}
-  return path;
+const cfg={
+ clinical:{label:'海马体积与MMSE评分（模拟）',kmin:1,kmax:7,step:.1,initial:4.6,highlight:5.6,xLabel:'双侧海马体积（mL）',yLabel:'MMSE评分（0—30）',samples:100},
+ power:{label:'幂函数：由直线到陡升曲线',kmin:1,kmax:100,step:1,initial:1,highlight:100,xLabel:'X',yLabel:'Y',samples:200},
+ exp:{label:'指数函数：由直线到指数增长',kmin:0,kmax:200,step:1,initial:0,highlight:100,xLabel:'X',yLabel:'Y',samples:200},
+ double:{label:'双向弯曲：强烈的非线性单调关系',kmin:1,kmax:40,step:1,initial:1,highlight:20,xLabel:'X',yLabel:'Y',samples:200}
+};
+const col={blue:'#2466c3',teal:'#108e88',orange:'#df882b'},W=690,H=374,L=70,R=25,T=22,B=64,PW=W-L-R,PH=H-T-B;
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),ease=t=>t*t*(3-2*t);
+const state={scene:'clinical',n:200,k:{clinical:4.6,power:1,exp:0,double:1},X:[],Y:[],Yplot:[],curve:null,ranksVisible:false,verified:false,manual:false,drag:null,anim:null,raf:0,progress:0,history:[],pointerIndex:-1,clinicalTrend:false,clinicalPearson:false};
+function rngFactory(seed){let s=seed>>>0;return ()=>{s^=s<<13;s^=s>>>17;s^=s<<5;return(s>>>0)/4294967296}};
+// Fixed standardized residuals, generated once for an explicitly simulated teaching dataset.
+// They are held constant when the curve parameter changes, so only the mean curve changes.
+const clinicalNoise=[0.393313284,1.134268828,-0.764043856,-1.180763408,0.980645797,2.008561648,-0.148536424,0.474210432,-2.095770257,0.805963506,0.097672571,1.826487083,0.212574212,-1.017978767,0.727908210,-0.039119443,-0.606152391,1.467616357,1.086156696,-0.456426689,-0.794163852,-0.253369356,0.959665862,-0.286094972,-0.815392471,-0.494716982,-1.011999328,-0.859101188,-0.147894535,0.498802833,1.744770208,1.992928279,-0.250911689,-0.636509758,-0.316899125,1.089225805,0.945009349,0.192742688,0.004441138,-0.666342741,0.429314143,0.263882114,0.179220595,-1.128174089,0.974467327,-0.338835240,1.396829202,-0.403443665,-0.723684741,-0.059465742,0.511331902,-1.183274984,0.428543844,-1.911242160,0.606451325,0.243571214,1.107478675,-1.503619342,0.005225789,0.675679188,0.701142921,0.747454047,-1.473524578,0.022867021,1.779875249,0.817199309,-1.801133252,0.557662958,0.905634242,1.035120348,1.353567461,1.931043564,-0.927891719,0.000842443,-0.153667090,0.276518980,-0.151253747,-0.468044868,-1.246211479,0.593437333,-0.155140735,0.788991379,-0.581350950,-0.301777300,-0.720306457,-0.249065136,0.089593819,-1.617466757,0.446543407,-0.311120218,-1.455866118,-0.693340631,0.286468777,-0.382287844,0.807653819,-0.379009853,-0.898576467,1.282758915,-1.402873197,-0.258595312];
+const CLINICAL_N=100, CLINICAL_X0=4.3, CLINICAL_SPAN=4.5;
+function clinicalX(t){return CLINICAL_X0+CLINICAL_SPAN*(.10*t+.90*Math.pow(t,2.4))}
+const fmt=v=>Number.isFinite(v)?v.toFixed(3):'—';
+function corr(a,b){const n=a.length,am=a.reduce((s,v)=>s+v,0)/n,bm=b.reduce((s,v)=>s+v,0)/n;let xy=0,xx=0,yy=0;for(let i=0;i<n;i++){const x=a[i]-am,y=b[i]-bm;xy+=x*y;xx+=x*x;yy+=y*y}return xx>1e-270&&yy>1e-270?clamp(xy/Math.sqrt(xx*yy),-1,1):NaN}
+function rank(a){const n=a.length,p=a.map((v,i)=>({v,i})).sort((u,v)=>u.v-v.v),r=new Array(n);for(let i=0;i<n;){let j=i+1;while(j<n&&p[j].v===p[i].v)j++;const avg=(i+j+1)/2;for(let z=i;z<j;z++)r[p[z].i]=avg;i=j;}return r;}
+function monotone(t,k,scene){if(scene==='power')return {x:t,y:Math.pow(t,k),yplot:Math.pow(t,k)};
+ if(scene==='exp'){const y=k===0?t:Math.expm1(k*t)/Math.expm1(k);return {x:t,y,yplot:y}}
+ // Under finite-precision arithmetic, 1-(1-t)^k can round to 1.
+ // Use the equivalent yStable=-(1-t)^k to compute Pearson and ranks without false ties.
+ const x=Math.pow(t,k),y=-Math.pow(1-t,k);return{x,y,yplot:1+y};
 }
-function renderPlot(rawMode){const svg=$(rawMode?'raw':'ranks');svg.replaceChildren();const xmax=rawMode?plotYMax:5.5;const ymin=rawMode?0:.5;const Y=v=>H-B-(v-ymin)/(xmax-ymin)*(H-T-B);const xy={X:coordX,Y};
-  const ticks=rawMode?([10,25,50,100,160,230].includes(xmax)?{10:2,25:5,50:10,100:20,160:40,230:50}[xmax]:20):1;
-  for(let tick=rawMode?0:1;tick<=xmax+1e-5;tick+=ticks){const yy=Y(tick);if(yy<T-2)continue;svgEl(svg,'line',{x1:L,y1:yy,x2:W-R,y2:yy,class:'gridline'});svgEl(svg,'text',{x:L-11,y:yy+5,'text-anchor':'end',class:'tick'},tick)}
-  for(let i=1;i<=X.length;i++){const px=coordX(i);svgEl(svg,'text',{x:px,y:H-B+25,'text-anchor':'middle',class:'tick'},i)}
-  svgEl(svg,'line',{x1:L,y1:T,x2:L,y2:H-B,class:'axis'});svgEl(svg,'line',{x1:L,y1:H-B,x2:W-R,y2:H-B,class:'axis'});
-  svgEl(svg,'text',{x:(L+W-R)/2,y:H-8,'text-anchor':'middle',class:'axisname'},rawMode?'X':'R(X)');svgEl(svg,'text',{x:22,y:(T+H-B)/2,transform:`rotate(-90 22 ${(T+H-B)/2})`,'text-anchor':'middle',class:'axisname'},rawMode?'Y':'R(Y)');
-  if(rawMode){
-    // The moving line connects observations and is not a fitted regression curve.
-    svgEl(svg,'path',{d:curvePoints(y,xy),fill:'none',stroke:'#75afe9','stroke-width':2.6,'stroke-dasharray':'7 7','stroke-linecap':'round',opacity:.65});
-    for(let i=0;i<X.length;i++)if(trace[i].length>1){for(let j=1;j<trace[i].length;j++){const op=.08+.36*j/trace[i].length;svgEl(svg,'line',{x1:coordX(i),y1:Y(trace[i][j-1]),x2:coordX(i),y2:Y(trace[i][j]),stroke:i===X.length-1?css.orange:css.blue,'stroke-width':3.1,'stroke-linecap':'round',opacity:op})}}
-  }else{svgEl(svg,'line',{x1:coordX(1),y1:Y(1),x2:coordX(5),y2:Y(5),stroke:'#99d2cb','stroke-width':2.3,'stroke-dasharray':'6 9'});
-  }
-  for(let i=0;i<X.length;i++){
-    const ry=rawMode?null:rank(y),px=coordX(i+1),py=Y(rawMode?y[i]:ry[i]),isLast=i===X.length-1;const switched=!rawMode&&Math.abs(ry[i]-(i+1))>1e-8;
-    if(!rawMode&&performance.now()<pulsingUntil)svgEl(svg,'circle',{cx:px,cy:py,r:23,fill:'none',stroke:css.teal,'stroke-width':2,opacity:.12});
-    svgEl(svg,'circle',{cx:px,cy:py,r:rawMode?(isLast?10.7:9.4):16,fill:rawMode?(isLast?css.orange:css.blue):(switched?css.orange:css.teal),class:'point'});
-    if(rawMode){const hit=svgEl(svg,'circle',{cx:px,cy:py,r:22,fill:'transparent',class:'hitpoint','data-i':i});svgEl(hit,'title',{},`X=${i+1}，Y=${y[i].toFixed(1)}；上下拖动`)}
-    else svgEl(svg,'text',{x:px,y:py+5.4,'text-anchor':'middle',class:'ranknum'},String(i+1));
-  }
+function clinicalMean(t,k){return 12+16*(-Math.expm1(-k*t))/(-Math.expm1(-k))}
+function generate(){const scene=state.scene,k=state.k[scene],n=scene==='clinical'?CLINICAL_N:state.n;
+ const X=[],Y=[],Yplot=[];
+ for(let i=0;i<n;i++){const t=(i+.5)/n;
+  if(scene==='clinical'){const x=clinicalX(t),ym=clinicalMean(t,k),val=Math.round(clamp(ym+clinicalNoise[i]*3.55,0,30));X.push(x);Y.push(val);Yplot.push(val)}
+  else{const o=monotone(t,k,scene);X.push(o.x);Y.push(o.y);Yplot.push(o.yplot)}
+ }
+ state.X=X;state.Y=Y;state.Yplot=Yplot;state.manual=false;
+ state.curve=scene==='clinical'?t=>({x:clinicalX(t),y:clinicalMean(t,k)}):t=>{const v=monotone(t,k,scene);return{x:v.x,y:v.yplot}};
 }
-function renderSpark(){const svg=$('spark');svg.replaceChildren();svgEl(svg,'rect',{x:0,y:1,width:152,height:56,rx:5,fill:'#f3f8fe'});const lo=Math.min(0,...history),hi=1,span=Math.max(.15,hi-lo);const Y=v=>49-(v-lo)/span*39;svgEl(svg,'line',{x1:7,y1:Y(1),x2:146,y2:Y(1),stroke:'#b7cdea','stroke-dasharray':'3 4'});if(history.length>=2){const path=history.map((v,i)=>`${i===0?'M':'L'}${(7+i/(Math.max(history.length-1,1))*139).toFixed(1)},${Y(v).toFixed(1)}`).join(' ');svgEl(svg,'path',{d:path,fill:'none',stroke:'#2b77d4','stroke-width':2.4,'stroke-linecap':'round','stroke-linejoin':'round'});const last=history.at(-1);svgEl(svg,'circle',{cx:146,cy:Y(last),r:3.6,fill:css.orange})}else{svgEl(svg,'text',{x:76,y:34,fill:'#93a8c3','text-anchor':'middle','font-size':12},'变化轨迹')}}
-function appendTrace(){for(let i=0;i<X.length;i++){const seq=trace[i];if(!seq.length||Math.abs(seq.at(-1)-y[i])>.15){seq.push(y[i]);if(seq.length>21)seq.shift()}}}
-function remember(){const r=corr(X,y);if(!Number.isFinite(r))return;if(history.length===0||Math.abs(history.at(-1)-r)>.00045){history.push(r);if(history.length>128){history=history.filter((_,i)=>i%2===0)}}}
-function render(){plotYMax=niceMax(Math.max(...y)*1.11);renderPlot(true);renderPlot(false);const rp=corr(X,y);$('pearson').textContent=Number.isFinite(rp)?rp.toFixed(3):'—';const displayPoint=selectedPoint===null?X.length-1:selectedPoint; $('valueState').textContent=`Y${String.fromCharCode(8320+displayPoint+1)} = ${y[displayPoint].toFixed(y[displayPoint]%1===0?0:1)}`;const rr=rank(y),same=rr.every((a,i)=>Math.abs(a-(i+1))<1e-8);$('rankStatus').innerHTML=same?'始终一致 <span style="font-size:20px">✓</span>':'顺序已变 ↔';$('rankStatus').classList.toggle('changed',!same);$('rankWatch').innerHTML='<span class="rankkey">R(Y)：</span>'+rr.map((v,i)=>`<span class="rank-pill ${Math.abs(v-(i+1))>1e-8?'swapped':''}">${Number.isInteger(v)?v:v.toFixed(1)}</span>`).join('');renderSpark();$('progress').style.width=(progress*100).toFixed(1)+'%'}
-
-function clearPlayback(){if(raf)cancelAnimationFrame(raf);raf=0;running=null;$('play').textContent='▶ 自动演示'}
-const DUR1=4200,HOLD1=630,DUR2=4600,HOLD2=650,DUR3=4600,DURSWAP=2500;
-const totalMain=DUR1+HOLD1+DUR2+HOLD2+DUR3;
-const blend=(from,to,t)=>from.map((z,i)=>z+(to[i]-z)*EASE(clamp(t,0,1)));
-function yAt(mode,t){
-  if(mode==='swap')return blend(START,SWAPPED,t/DURSWAP);
-  if(mode==='one')return blend(START,STAGE1,t/DUR1);
-  if(mode==='two')return blend(STAGE1,STAGE2,t/DUR2);
-  if(mode==='three')return blend(STAGE2,STAGE3,t/DUR3);
-  if(t<=DUR1)return blend(START,STAGE1,t/DUR1);
-  if(t<=DUR1+HOLD1)return STAGE1.slice();
-  if(t<=DUR1+HOLD1+DUR2)return blend(STAGE1,STAGE2,(t-DUR1-HOLD1)/DUR2);
-  if(t<=DUR1+HOLD1+DUR2+HOLD2)return STAGE2.slice();
-  return blend(STAGE2,STAGE3,(t-DUR1-HOLD1-DUR2-HOLD2)/DUR3);
+function svgEl(svg,tag,attrs={},str){let el=document.createElementNS(NS,tag);Object.entries(attrs).forEach(([a,v])=>el.setAttribute(a,String(v)));if(str!==undefined)el.textContent=str;svg.appendChild(el);return el;}
+function bounds(){return state.scene==='clinical'?{xmin:4,xmax:9,ymin:0,ymax:30}: {xmin:0,xmax:1,ymin:0,ymax:1}}
+function coordX(v,b){return L+(v-b.xmin)/(b.xmax-b.xmin)*PW}
+function coordY(v,b){return H-B-(v-b.ymin)/(b.ymax-b.ymin)*PH}
+function axes(svg,rankMode){const n=state.X.length,b=rankMode?{xmin:1,xmax:n,ymin:1,ymax:n}:bounds(),ticks=rankMode?[0,.25,.5,.75,1]:[0,.2,.4,.6,.8,1];
+ for(const frac of ticks){const xx=L+frac*PW,yy=H-B-frac*PH;svgEl(svg,'line',{x1:xx,y1:T,x2:xx,y2:H-B,class:'gridline'});svgEl(svg,'line',{x1:L,y1:yy,x2:W-R,y2:yy,class:'gridline'});
+ const xval=rankMode?Math.round(1+frac*(n-1)):(state.scene==='clinical'?(b.xmin+frac*(b.xmax-b.xmin)).toFixed(0):frac.toFixed(1));
+ const yval=rankMode?Math.round(1+frac*(n-1)):(state.scene==='clinical'?Math.round(b.ymin+frac*(b.ymax-b.ymin)):frac.toFixed(1));
+ svgEl(svg,'text',{x:xx,y:H-B+23,'text-anchor':'middle',class:'tick'},xval);svgEl(svg,'text',{x:L-11,y:yy+5,'text-anchor':'end',class:'tick'},yval)}
+ svgEl(svg,'line',{x1:L,y1:T,x2:L,y2:H-B,class:'axis'});svgEl(svg,'line',{x1:L,y1:H-B,x2:W-R,y2:H-B,class:'axis'});
+ svgEl(svg,'text',{x:(L+W-R)/2,y:H-13,'text-anchor':'middle',class:'axisname'},rankMode?'X的秩 R(X)':cfg[state.scene].xLabel);
+ svgEl(svg,'text',{x:17,y:(T+H-B)/2,transform:`rotate(-90 17 ${(T+H-B)/2})`,'text-anchor':'middle',class:'axisname'},rankMode?'Y的秩 R(Y)':cfg[state.scene].yLabel);
+ return b;}
+function renderRaw(){const svg=$('raw');svg.replaceChildren();const b=axes(svg,false),n=state.X.length;
+ if(!state.manual&&(state.scene!=='clinical'||state.clinicalTrend)){let d='';for(let i=0;i<=280;i++){const t=i/280,v=state.curve(t);const x=coordX(v.x,b),y=coordY(v.y,b);d+=(i===0?'M':' L')+x.toFixed(2)+' '+y.toFixed(2)}svgEl(svg,'path',{d,fill:'none',stroke:'#8dbce8','stroke-width':2.4,'stroke-dasharray':'6 7','stroke-linecap':'round',opacity:.9})}
+ const r=n<=20?5.8:n<=80?4.3:n<=200?3.4:2.6;
+ for(let i=0;i<n;i++){const x=coordX(state.X[i],b),y=coordY(state.Yplot[i],b),active=i===state.pointerIndex;
+ const dot=svgEl(svg,'circle',{cx:x,cy:y,r:active?r+2:r,fill:active?col.orange:col.blue,opacity:active?1:.78,class:'point','data-i':i});
+ const note=state.scene==='clinical'?`海马体积 ${state.X[i].toFixed(2)} mL；MMSE ${state.Yplot[i]} 分`:`观测 ${i+1}：X=${displayNum(state.X[i])}，Y=${displayNum(state.Yplot[i])}`;
+ svgEl(dot,'title',{},note)}
 }
-function updatePhase(phase){
-  const names={one:'阶段 01 · 单点变化',two:'阶段 02 · 非线性关联',three:'阶段 03 · 非线性关联',swap:'拓展 · 交换第4、5名'};
-  $('phaseState').textContent=names[phase]||'正在演示';
-  pulsingUntil=performance.now()+380;
+function displayNum(x){if(Math.abs(x)<1e-4&&x!==0)return x.toExponential(2);return Number(x.toPrecision(5)).toString()}
+function renderRank(){const svg=$('ranks');svg.replaceChildren();axes(svg,true);const n=state.X.length,ra=rank(state.X),rb=rank(state.Y);const rankXY=v=>L+(v-1)/(n-1)*PW,rankYY=v=>H-B-(v-1)/(n-1)*PH;
+ svgEl(svg,'line',{x1:rankXY(1),y1:rankYY(1),x2:rankXY(n),y2:rankYY(n),stroke:'#95d1c9','stroke-width':2.2,'stroke-dasharray':'6 8'});
+ const rad=n<=20?6.5:n<=80?4.6:n<=200?3.5:2.7;
+ for(let i=0;i<n;i++){const mismatch=Math.abs(ra[i]-rb[i])>1e-9;let dot=svgEl(svg,'circle',{cx:rankXY(ra[i]),cy:rankYY(rb[i]),r:rad,fill:mismatch?'#cf8b33':col.teal,opacity:.79,stroke:'#fff','stroke-width':.8});svgEl(dot,'title',{},`观测${i+1}：X的秩 ${ra[i]}，Y的秩 ${rb[i]}`)}
+ return corr(ra,rb);
 }
-function start(mode){
-  clearPlayback();selectedPoint=null;
-  const base=mode==='two'?STAGE1:mode==='three'?STAGE2:START;
-  for(let i=0;i<X.length;i++)y[i]=base[i];
-  trace=Array.from({length:X.length},(_,i)=>[y[i]]);history=[];remember();lastTraceMs=0;
-  changed=true;
-  const total={all:totalMain,one:DUR1,two:DUR2,three:DUR3,swap:DURSWAP}[mode];
-  running={mode,total,paused:false,elapsed:0,start:null,oldPhase:''};
-  $('play').textContent='Ⅱ 暂停';progress=0;
-  $('swapHelp').textContent=mode==='swap'?'正在交换第4、5个观测值：观察右侧秩次何时发生变化。':'交换第4、5个观测值的大小顺序，观察右侧秩次图。';
-  updatePhase(mode==='all'?'one':mode);render();raf=requestAnimationFrame(frame);
+function recordHistory(reset=false){if(reset)state.history=[];let v=corr(state.X,state.Y);if(Number.isFinite(v)&&(!state.history.length||Math.abs(v-state.history.at(-1))>.00025))state.history.push(v);if(state.history.length>160)state.history=state.history.filter((_,i)=>i%2===0)}
+function renderSpark(){const svg=$('spark');svg.replaceChildren();svgEl(svg,'rect',{x:0,y:1,width:152,height:56,rx:5,fill:'#f3f8fe'});
+ const h=state.history;if(h.length<=1){svgEl(svg,'text',{x:76,y:34,fill:'#93a8c3','text-anchor':'middle','font-size':12},'变化轨迹');return}
+ const p=h.map((v,i)=>`${i?'L':'M'}${(7+i/(h.length-1)*139).toFixed(1)},${(49-(v+1)/2*39).toFixed(1)}`).join(' ');svgEl(svg,'path',{d:p,fill:'none',stroke:'#2b77d4','stroke-width':2.5,'stroke-linecap':'round'});svgEl(svg,'circle',{cx:146,cy:49-(h.at(-1)+1)/2*39,r:3.6,fill:col.orange});
 }
-function frame(now){
-  const a=running;if(!a||a.paused)return;
-  if(a.start===null)a.start=now-a.elapsed;
-  const t=clamp(now-a.start,0,a.total);a.elapsed=t;
-  const vals=yAt(a.mode,t);for(let i=0;i<X.length;i++)y[i]=vals[i];
-  let phase=a.mode;
-  if(a.mode==='all')phase=t<=DUR1+HOLD1?'one':t<=DUR1+HOLD1+DUR2+HOLD2?'two':'three';
-  if(phase!==a.oldPhase){a.oldPhase=phase;updatePhase(phase)}
-  progress=t/a.total;
-  if(now-lastTraceMs>48){appendTrace();remember();lastTraceMs=now}
-  render();
-  if(t<a.total){raf=requestAnimationFrame(frame);return}
-  raf=0;running=null;progress=1;trace=Array.from({length:X.length},()=>[]);remember();render();
-  const isSwap=a.mode==='swap';
-  $('phaseState').textContent=isSwap?'顺序交换完成':a.mode==='all'?'演示完成':`阶段 ${a.mode==='one'?'01':a.mode==='two'?'02':'03'} 完成`;
-  $('play').textContent='↻ 重播自动演示';
-  if(isSwap){
-    $('swapHelp').textContent='两个点交叉，R(Y) 从 1,2,3,4,5 变为 1,2,3,5,4；右侧高亮变化的秩次。';
-    $('takeaway').innerHTML='当第4、5个观测值真的交换大小顺序时，<b>秩次也随之改变。</b>';
-  }else{
-    $('swapHelp').textContent='交换第4、5个观测值的大小顺序，观察右侧秩次图。';
-    $('takeaway').innerHTML='散点变化时，<b>Pearson系数不断改变</b>，而五个观测值的大小顺序始终一致。';
-  }
+function getRankSummary(r){if(!state.ranksVisible)return '待探索';if(state.scene!=='clinical'&&!state.manual&&Math.abs(r-1)<1e-10)return '两列秩完全一致';if(Math.abs(r-1)<1e-10)return '两列秩完全一致';if(r>.5)return '总体呈同向秩关系';if(r<-.5)return '总体呈反向秩关系';return '秩关系并非完全一致'}
+function render(){renderRaw();const rp=corr(state.X,state.Y),rs=renderRank();$('pearson').textContent=state.scene==='clinical'&&!state.clinicalPearson?'—':fmt(rp);$('spark').style.visibility=state.scene==='clinical'?'hidden':'visible';$('rankMask').hidden=state.ranksVisible;
+ $('showRank').textContent=state.ranksVisible?'隐藏秩图':'观察秩关系';$('showRank').setAttribute('aria-pressed',String(state.ranksVisible));$('verify').disabled=!state.ranksVisible;$('verify').textContent=state.verified?'隐藏验证':'定义后验证';$('verify').setAttribute('aria-pressed',String(state.verified));
+ $('rankMetricTitle').textContent=state.verified?'Spearman 秩相关系数':'大小顺序观察';$('spearman').hidden=!state.verified;$('spearman').textContent=fmt(rs);$('rankSummary').hidden=state.verified;
+ $('rankSummary').textContent=getRankSummary(rs);$('rankSummary').classList.toggle('muted',!state.ranksVisible);$('rankDescription').textContent=state.verified?'对两列秩计算Pearson相关系数':state.ranksVisible?(state.scene==='clinical'?'模拟MMSE是整数评分，并列值采用平均秩':'散点是否沿着秩的对角线排列？'):'这组数据的秩之间是什么关系？';
+ $('progressFill').style.width=(state.progress*100).toFixed(1)+'%';renderSpark();
 }
-function togglePlay(){
-  if(!running){start('all');return}
-  const a=running;
-  if(!a.paused){a.elapsed=a.start===null?0:clamp(performance.now()-a.start,0,a.total);a.paused=true;if(raf)cancelAnimationFrame(raf);raf=0;$('play').textContent='▶ 继续';$('phaseState').textContent='已暂停'}
-  else{a.paused=false;a.start=null;$('play').textContent='Ⅱ 暂停';raf=requestAnimationFrame(frame)}
+function updateSceneText(){const sc=state.scene,c=cfg[sc];$('sceneTitle').textContent=c.label;$('rawTitle').textContent=sc==='clinical'?'原始数据：海马体积与MMSE':'原始数据 X 与 Y';$('disclaimer').textContent=sc==='clinical'?'教学模拟 · 并非真实临床研究结果':'数学模型 · 200点为默认样本量 · 无随机误差';$('countTop').textContent=sc==='clinical'?'教学模拟 · 100名受试者':`数学实验 · ${state.n}个观测点`;
+ $('mildCurve').textContent='温和曲线';$('clinicalSteps').hidden=sc!=='clinical';$('mathControls').hidden=sc==='clinical';$('mathProgress').hidden=sc==='clinical';$('play').hidden=sc==='clinical';$('example').hidden=sc==='clinical';$('mildCurve').hidden=sc==='clinical';$('manualMode').parentElement.hidden=sc==='clinical';$('showTrend').textContent=state.clinicalTrend?'① 隐藏模拟趋势':'① 显示模拟趋势';$('showClinicalPearson').textContent=state.clinicalPearson?'② 隐藏Pearson':'② 显示Pearson';$('pointInfo').textContent=sc==='clinical'?'100个观测对象':`${state.n}个观测点`;$('nHint').textContent=sc==='clinical'?'脑健康场景固定100人':'可切换样本量';$('rawNote').textContent=sc==='clinical'?(state.clinicalTrend?'虚线是预设的模拟趋势，不是回归拟合线':'固定模拟数据：先观察散点形状'):'虚线为函数曲线，不是拟合线';
+ $('formula').innerHTML=sc==='clinical'?'X：双侧海马体积　Y：MMSE评分':sc==='power'?'X = t，Y = t<sup>k</sup>':sc==='exp'?'X = t，Y = (e<sup>kt</sup> − 1) / (e<sup>k</sup> − 1)':'X = t<sup>k</sup>，Y = 1 − (1 − t)<sup>k</sup>';
+ const inp=$('curveInput');inp.min=c.kmin;inp.max=c.kmax;inp.step=c.step;inp.value=state.k[sc];$('kValue').textContent=sc==='clinical'?state.k[sc].toFixed(1):String(state.k[sc]);$('sliderLabel').textContent=sc==='clinical'?'模拟关系的弯曲程度':'曲线弯曲参数 k';$('kMinLabel').textContent=sc==='clinical'?'较接近线性': '接近线性';$('kMaxLabel').textContent='更强的非线性';
+ document.querySelectorAll('.tab').forEach(b=>{const active=b.dataset.scene===sc;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});
+ document.querySelectorAll('.n-btn').forEach(b=>{b.disabled=sc==='clinical';b.classList.toggle('active',+b.dataset.n===(sc==='clinical'?100:state.n))});
+ $('footnote').textContent=sc==='clinical'?'固定的教学模拟：100名受试者，每次切换场景和重置都保持相同数据，X为双侧海马总体积（mL），Y为0—30分的整数MMSE评分。虚线仅是模拟时预设的趋势，不是拟合结果；并列值采用平均秩。':
+ '数学构造：tᵢ=(i−0.5)/n（无随机误差），虚线是真实函数曲线而非拟合线。可使用20、80、200、500个点和非线性参数滑块。数值和图形均根据当前数学函数生成；强非线性参数用于探索统计规律。第三类函数采用数值稳定的等价表达计算秩。';
 }
-function reset(){
-  clearPlayback();selectedPoint=null;for(let i=0;i<X.length;i++)y[i]=START[i];trace=Array.from({length:X.length},()=>[]);history=[];progress=0;changed=false;
-  $('phaseState').textContent='准备开始';
-  $('swapHelp').textContent='交换第4、5个观测值的大小顺序，观察右侧秩次图。';
-  $('takeaway').innerHTML='请先观察两幅图：原始数值改变时，<b>大小顺序是否仍然一致？</b>';
-  render();
+function updateTakeaway(){const sc=state.scene,k=state.k[sc];if(state.manual){$('phaseState').textContent='自由探索 · 数据已调整';$('takeaway').innerHTML='尝试拖动左图中的点：<b>数值发生变化时，两个变量的大小顺序会改变吗？</b>';return}
+ if(sc==='clinical'){$('phaseState').textContent='脑健康研究 · 固定模拟数据';$('takeaway').innerHTML=!state.clinicalTrend?'先观察散点：<b>海马体积与MMSE评分有什么变化趋势？</b>':!state.clinicalPearson?'虚线显示的是预设的模拟趋势。<b>这种关系一定是线性的吗？</b>':'Pearson已经显示。<b>它衡量的是线性关联，能否充分描述非线性单调关系？</b>';return}
+ $('phaseState').textContent=k===cfg[sc].kmin?'线性基准 · 开始探索':k>=cfg[sc].highlight*.9?'明显的非线性单调曲线':'非线性曲线逐渐形成';
+ $('takeaway').innerHTML=k===cfg[sc].kmin?'目前曲线接近或等于直线。<b>如果曲线越来越弯，Pearson会怎样？</b>':`Pearson已经变成 <b>${fmt(corr(state.X,state.Y))}</b>。曲线仍然一直上升吗？<b>大小顺序有没有变？</b>`;
 }
-$('play').addEventListener('click',togglePlay);$('one').addEventListener('click',()=>start('one'));$('two').addEventListener('click',()=>start('two'));$('three').addEventListener('click',()=>start('three'));$('swap').addEventListener('click',()=>start('swap'));$('restore').addEventListener('click',reset);$('reset').addEventListener('click',reset);
-const svg=$('raw');svg.addEventListener('pointerdown',e=>{let target=e.target.closest('[data-i]');if(!target)return;clearPlayback();let i=Number(target.getAttribute('data-i')),rect=svg.getBoundingClientRect();drag={i,sy:e.clientY,start:y[i],range:plotYMax,height:rect.height};selectedPoint=i;svg.setPointerCapture(e.pointerId);changed=true;$('phaseState').textContent='手动拖动中';trace=Array.from({length:X.length},(_,k)=>[y[k]]);history=[];remember();e.preventDefault()});
-svg.addEventListener('pointermove',e=>{if(!drag)return;let i=drag.i,dy=drag.sy-e.clientY, sensitivity=Math.max(.52, (220-drag.start)/Math.max(160,drag.height*.8));const next=clamp(drag.start+dy*sensitivity,.15,220);y[i]=next;appendTrace();remember();render();e.preventDefault()});
-function endDrag(){if(!drag)return;drag=null;$('phaseState').textContent='手动改变数值';$('takeaway').innerHTML='拖动之后，<b>Pearson系数可能改变</b>；右侧秩次图会根据实际大小顺序正确更新。'}
-svg.addEventListener('pointerup',endDrag);svg.addEventListener('pointercancel',endDrag);svg.addEventListener('lostpointercapture',endDrag);
-$('full').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch(e){$('full').textContent='可按 F11 全屏'}});document.addEventListener('fullscreenchange',()=>$('full').textContent=document.fullscreenElement?'退出全屏':'全屏展示');
-reset();
+function refresh(resetHistory=false){generate();recordHistory(resetHistory);updateSceneText();updateTakeaway();render()}
+function cancelAnimation(){if(state.raf)cancelAnimationFrame(state.raf);state.raf=0;state.anim=null;$('play').textContent='▶ 自动演示';}
+function switchScene(sc){cancelAnimation();state.scene=sc;state.pointerIndex=-1;state.progress=0;state.ranksVisible=false;state.verified=false;state.clinicalTrend=false;state.clinicalPearson=false;$('manualMode').checked=false;refresh(true)}
+function setK(k,resetHistory=false){state.k[state.scene]=k;state.pointerIndex=-1;refresh(resetHistory)}
+function example(){cancelAnimation();state.progress=0;setK(cfg[state.scene].highlight,true)}
+function reset(){cancelAnimation();state.k[state.scene]=cfg[state.scene].initial;state.ranksVisible=false;state.verified=false;state.pointerIndex=-1;state.progress=0;state.clinicalTrend=false;state.clinicalPearson=false;$('manualMode').checked=false;refresh(true)}
+const DUR=6200;
+function animationFrame(now){const a=state.anim;if(!a||a.paused)return;if(a.start===null)a.start=now-a.elapsed;const elapsed=clamp(now-a.start,0,DUR);a.elapsed=elapsed;const cfgNow=cfg[state.scene];state.k[state.scene]=cfgNow.kmin+(cfgNow.highlight-cfgNow.kmin)*ease(elapsed/DUR);
+ if(cfgNow.step===1&&elapsed===DUR)state.k[state.scene]=cfgNow.highlight;
+ generate();recordHistory();updateSceneText();updateTakeaway();state.progress=elapsed/DUR;render();
+ if(elapsed<DUR)state.raf=requestAnimationFrame(animationFrame);else{state.raf=0;state.anim=null;$('play').textContent='↻ 重播';$('phaseState').textContent='自动演示完成';}
+}
+function play(){if(state.scene==='clinical')return;if(!state.anim){cancelAnimation();const c=cfg[state.scene];state.k[state.scene]=c.kmin;state.progress=0;state.pointerIndex=-1;state.anim={start:null,elapsed:0,paused:false};refresh(true);$('play').textContent='Ⅱ 暂停';state.raf=requestAnimationFrame(animationFrame);return}
+ const a=state.anim;if(!a.paused){a.elapsed=a.start===null?0:clamp(performance.now()-a.start,0,DUR);a.paused=true;cancelAnimationFrame(state.raf);state.raf=0;$('play').textContent='▶ 继续';$('phaseState').textContent='已暂停'}
+ else{a.paused=false;a.start=null;$('play').textContent='Ⅱ 暂停';state.raf=requestAnimationFrame(animationFrame)}
+}
+function dragCoordinates(e){let rect=$('raw').getBoundingClientRect();return {x:(e.clientX-rect.left)*W/rect.width,y:(e.clientY-rect.top)*H/rect.height}}
+const plot=$('raw');
+plot.addEventListener('pointerdown',e=>{if(state.scene==='clinical'||!$('manualMode').checked)return;const p=dragCoordinates(e),b=bounds();let best=1e9,idx=-1;
+ for(let i=0;i<state.X.length;i++){const dx=coordX(state.X[i],b)-p.x,dy=coordY(state.Yplot[i],b)-p.y,d=dx*dx+dy*dy;if(d<best){best=d;idx=i}}
+ if(idx<0||best>21*21)return;cancelAnimation();state.drag={i:idx};state.manual=true;state.pointerIndex=idx;plot.setPointerCapture(e.pointerId);recordHistory(true);e.preventDefault();});
+plot.addEventListener('pointermove',e=>{if(!state.drag)return;const p=dragCoordinates(e),b=bounds();let val=clamp(b.ymin+(H-B-p.y)/PH*(b.ymax-b.ymin),b.ymin,b.ymax);if(state.scene==='clinical')val=Math.round(val);
+ const i=state.drag.i;state.Yplot[i]=val;state.Y[i]=state.scene==='double'?val-1:val;state.curve=null;recordHistory();updateTakeaway();render();e.preventDefault();});
+function endDrag(){if(!state.drag)return;state.drag=null;updateTakeaway();render()}
+plot.addEventListener('pointerup',endDrag);plot.addEventListener('pointercancel',endDrag);plot.addEventListener('lostpointercapture',endDrag);
+$('curveInput').addEventListener('input',e=>{if(state.scene==='clinical')return;cancelAnimation();state.progress=0;state.k[state.scene]=+e.target.value;refresh(false)});
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>switchScene(b.dataset.scene)));
+document.querySelectorAll('.n-btn').forEach(b=>b.addEventListener('click',()=>{if(state.scene==='clinical')return;cancelAnimation();state.n=+b.dataset.n;state.progress=0;refresh(true)}));
+$('play').addEventListener('click',play);
+$('mildCurve').addEventListener('click',()=>{if(state.scene==='clinical')return;cancelAnimation();const mildK={power:2,exp:8,double:5};state.progress=0;setK(mildK[state.scene],true)});
+$('example').addEventListener('click',example);$('reset').addEventListener('click',reset);
+$('showTrend').addEventListener('click',()=>{if(state.scene!=='clinical')return;state.clinicalTrend=!state.clinicalTrend;updateSceneText();updateTakeaway();render()});
+$('showClinicalPearson').addEventListener('click',()=>{if(state.scene!=='clinical')return;state.clinicalPearson=!state.clinicalPearson;updateSceneText();updateTakeaway();render()});
+$('showRank').addEventListener('click',()=>{state.ranksVisible=!state.ranksVisible;if(!state.ranksVisible)state.verified=false;render()});
+$('verify').addEventListener('click',()=>{if(!state.ranksVisible)return;state.verified=!state.verified;render()});
+$('manualMode').addEventListener('change',e=>{if(state.scene==='clinical'){e.target.checked=false;return}if(!e.target.checked)state.pointerIndex=-1;render()});
+$('full').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch(e){$('full').textContent='可按 F11 全屏'}});
+document.addEventListener('fullscreenchange',()=>$('full').textContent=document.fullscreenElement?'退出全屏':'全屏展示');
+refresh(true);
 })();
 </script>
-</body>
-</html>
+</body></html>
