@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="theme-color" content="#1d59ab" />
-<title>非线性关联｜交互式统计实验</title>
+<title>非线性关联与秩关系｜交互式统计实验</title>
 <style>
 :root{--navy:#123c79;--blue:#225fbb;--blue2:#377fdb;--teal:#108e88;--orange:#df882b;--text:#193a68;--muted:#6e829f;--line:#d9e5f4;--pale:#f2f7fd;--paper:#fff;--font:"Microsoft YaHei","微软雅黑","PingFang SC","Noto Sans CJK SC",sans-serif}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#f8fbff;color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid #f8ba5a;outline-offset:3px}button:disabled{cursor:not-allowed;opacity:.45}[hidden]{display:none!important}
@@ -56,6 +56,19 @@
 @media(max-width:1100px){.rank-plot.five-active{grid-template-columns:minmax(0,1fr) minmax(230px,1fr)}.rank-table th,.rank-table td{padding:4px 2px}.five-dock{padding:6px}.figures.five-focus{grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr)}}
 @media(max-width:820px){.figures.five-focus{grid-template-columns:1fr}.rank-plot.five-active{height:340px;grid-template-columns:minmax(0,1fr) minmax(260px,.95fr)}.spacing-row{grid-template-columns:1fr}}
 @media(max-width:530px){.rank-plot.five-active{grid-template-columns:1fr;height:auto}.rank-plot.five-active #ranks{height:250px}.five-dock{max-height:none}.five-actions .btn{font-size:12px}}
+
+/* Y5 demonstration is embedded in the same five-point panel as the rank diagram. */
+.five-extension{display:flex;gap:6px;margin-top:1px}
+.five-extension[hidden],.five-spacing-controls[hidden]{display:none!important}
+.five-extension .btn{width:100%;font-size:12px;min-height:31px;padding:4px 6px}
+.five-spacing-controls{display:flex;flex-direction:column;gap:3px;padding:6px 8px;background:#eaf4ff;border:1px solid #cfe0f2;border-radius:7px}
+.five-spacing-controls .spacing-label{display:flex;align-items:center;justify-content:space-between;gap:4px;font-size:12px;color:#295786;font-weight:750}
+.five-spacing-controls .spacing-label output{font-weight:850;color:#b66e1c;font-size:16px;font-variant-numeric:tabular-nums}
+.five-spacing-controls input[type=range]{width:100%;accent-color:#df882b;cursor:pointer;height:21px;margin:0}
+.five-spacing-controls .scale-ends{display:flex;justify-content:space-between;color:#788fa8;font-size:10px}
+.five-dock.spacing-mode .five-actions{display:none}
+.five-dock.spacing-mode .rank-table th,.five-dock.spacing-mode .rank-table td{padding-top:4px;padding-bottom:4px}
+.five-dock.spacing-mode .five-status{color:#137c75;font-weight:750}
 </style>
 </head>
 <body>
@@ -81,7 +94,13 @@
     <aside class="five-dock" id="rankLab" hidden aria-label="五个观测对象的数值与秩">
      <div class="five-dock-head"><strong>5个观测对象</strong><button class="btn secondary small" id="leaveFive" type="button">全部数据</button></div>
      <div class="rank-table-wrap"><table class="rank-table" aria-label="五个观测对象的数值与秩"><thead><tr><th>对象</th><th>X值</th><th>Y值</th><th>X的秩</th><th>Y的秩</th></tr></thead><tbody id="fiveRows"></tbody></table></div>
-     <div class="five-actions"><button class="btn secondary small" id="revealFive" type="button">计算5个秩</button><button class="btn teal small" id="nextFive" type="button" disabled>添加一个点</button><button class="btn secondary small" id="allFive" type="button" disabled>显示全部</button></div>
+     <div class="five-actions" id="fiveActions"><button class="btn secondary small" id="revealFive" type="button">计算5个秩</button><button class="btn teal small" id="nextFive" type="button" disabled>添加一个点</button><button class="btn secondary small" id="allFive" type="button" disabled>显示全部</button></div>
+     <div class="five-extension" id="fiveExtension" hidden><button class="btn secondary small" id="startSpacing" type="button">第5点Y值变化</button></div>
+     <div class="five-spacing-controls" id="fiveSpacingControls" hidden>
+      <div class="spacing-label"><span>保持前4点不变，调节 Y₅</span><output id="fiveSpacingValue">5</output></div>
+      <input id="fiveSpacingSlider" type="range" min="5" max="200" step="1" value="5" aria-label="第5个观测值的Y" />
+      <div class="scale-ends"><span>5</span><span>200</span></div>
+     </div>
      <output class="five-status" id="fiveProgress" aria-live="polite">5个观测对象</output>
      <span id="rankLabQuestion" hidden></span>
      <span id="fiveHint" hidden></span>
@@ -106,19 +125,6 @@
   <div class="explore"><div class="teacher-tip" id="takeaway">海马体积与MMSE评分：<b>固定模拟数据</b></div>
    <div class="buttons"><label class="check" title="启用后，可在左图用鼠标改变任一观测对象的Y值"><input type="checkbox" id="manualMode" />自由拖动</label><button class="btn teal small" id="showRank" type="button">显示秩图</button><button class="btn warm small" id="verify" type="button" disabled>显示Spearman</button></div>
   </div>
-   <details class="spacing-experiment" id="spacingDetails">
-    <summary>数值间距变化（独立5点实验）</summary>
-    <div class="spacing-row">
-     <div>
-      <div class="field-title"><label for="spacingSlider">保持前4点不变，只增大第5个Y值</label><output id="spacingValue">Y₅=5</output></div>
-      <input type="range" id="spacingSlider" min="5" max="200" step="1" value="5" />
-      <div class="range-ends"><span>5</span><span>200</span></div>
-      <div class="spacing-readout">X=(1,2,3,4,5)<br>Y=(1,2,3,4,<span id="spacingNumber">5</span>)<br>Pearson = <strong id="spacingPearson">1.000</strong><br>两列秩：<b>始终完全一致</b></div>
-     </div>
-     <svg id="spacingMini" class="spacing-mini" viewBox="0 0 320 158" role="img" aria-label="五点数值间距变化的散点图"></svg>
-    </div>
-    <div class="spacing-caption">独立数据 X=(1,2,3,4,5)，只调整Y₅；秩保持一致。</div>
-   </details>
  </section>
  <p class="footnote" id="footnote">脑健康场景为模拟数据；趋势线不是回归拟合线。MMSE并列分数使用平均秩。</p>
 </main>
@@ -133,7 +139,7 @@ const cfg={
 };
 const col={blue:'#2466c3',teal:'#108e88',orange:'#df882b'},W=690,H=374,L=70,R=25,T=22,B=64,PW=W-L-R,PH=H-T-B;
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),ease=t=>t*t*(3-2*t);
-const state={scene:'clinical',n:200,k:{clinical:4.6,power:1,exp:0,double:1},X:[],Y:[],Yplot:[],curve:null,ranksVisible:false,verified:false,manual:false,drag:null,anim:null,raf:0,progress:0,history:[],pointerIndex:-1,clinicalTrend:false,clinicalPearson:false,sampleActive:false,sampleIndices:[],sampleRevealed:false,sampleStep:0};
+const state={scene:'clinical',n:200,k:{clinical:4.6,power:1,exp:0,double:1},X:[],Y:[],Yplot:[],curve:null,ranksVisible:false,verified:false,manual:false,drag:null,anim:null,raf:0,progress:0,history:[],pointerIndex:-1,clinicalTrend:false,clinicalPearson:false,sampleActive:false,sampleIndices:[],sampleRevealed:false,sampleStep:0,spacingFocus:false,spacingValue:5,preSpacingStep:0};
 function rngFactory(seed){let s=seed>>>0;return ()=>{s^=s<<13;s^=s>>>17;s^=s<<5;return(s>>>0)/4294967296}};
 // Fixed standardized residuals, generated once for an explicitly simulated teaching dataset.
 // They are held constant when the curve parameter changes, so only the mean curve changes.
@@ -144,25 +150,32 @@ const fmt=v=>Number.isFinite(v)?v.toFixed(3):'—';
 function corr(a,b){const n=a.length,am=a.reduce((s,v)=>s+v,0)/n,bm=b.reduce((s,v)=>s+v,0)/n;let xy=0,xx=0,yy=0;for(let i=0;i<n;i++){const x=a[i]-am,y=b[i]-bm;xy+=x*y;xx+=x*x;yy+=y*y}return xx>1e-270&&yy>1e-270?clamp(xy/Math.sqrt(xx*yy),-1,1):NaN}
 function rank(a){const n=a.length,p=a.map((v,i)=>({v,i})).sort((u,v)=>u.v-v.v),r=new Array(n);for(let i=0;i<n;){let j=i+1;while(j<n&&p[j].v===p[i].v)j++;const avg=(i+j+1)/2;for(let z=i;z<j;z++)r[p[z].i]=avg;i=j;}return r;}
 const FIVE_LETTERS=['A','B','C','D','E'];
-function sampleData(){const ids=state.sampleIndices, xs=ids.map(i=>state.X[i]),ys=ids.map(i=>state.Y[i]);return {xs,ys,rx:rank(xs),ry:rank(ys)};}
+function sampleData(){if(state.spacingFocus){const xs=[1,2,3,4,5],ys=[1,2,3,4,state.spacingValue];return {xs,ys,rx:rank(xs),ry:rank(ys)};}const ids=state.sampleIndices, xs=ids.map(i=>state.X[i]),ys=ids.map(i=>state.Y[i]);return {xs,ys,rx:rank(xs),ry:rank(ys)};}
 function formatFiveValue(v){if(!Number.isFinite(v))return '—';if(v===0)return '0';if(Math.abs(v)<1e-4 || Math.abs(v)>1e5)return v.toExponential(3);return Number(v.toPrecision(6)).toString();}
 function sampleIndices(n){const fractions=[.50,.90,.10,.70,.30];const used=new Set();return fractions.map(t=>{let i=Math.round(t*(n-1));while(used.has(i))i=(i+1)%n;used.add(i);return i;});}
-function updateFivePanel(){const root=$('rankLab');root.hidden=!state.sampleActive;$('pickFive').hidden=state.scene==='clinical'||state.sampleActive;$('showRank').hidden=state.sampleActive;
+function updateFivePanel(){
+ const root=$('rankLab');root.hidden=!state.sampleActive;$('pickFive').hidden=state.scene==='clinical'||state.sampleActive;$('showRank').hidden=state.sampleActive;
  $('rankPlot').classList.toggle('five-active',state.sampleActive);$('figures').classList.toggle('five-focus',state.sampleActive);
  if(!state.sampleActive)return;
- const d=sampleData();$('fiveRows').innerHTML=FIVE_LETTERS.map((a,i)=>`<tr><td><span class="object-letter">${a}</span></td><td class="number" title="${d.xs[i]}">${formatFiveValue(d.xs[i])}</td><td class="number" title="${d.ys[i]}">${formatFiveValue(d.ys[i])}</td><td class="answer">${state.sampleRevealed?d.rx[i]:'—'}</td><td class="answer">${state.sampleRevealed?d.ry[i]:'—'}</td></tr>`).join('');
+ const inSpacing=state.spacingFocus,d=sampleData(),labs=inSpacing?['1','2','3','4','5']:FIVE_LETTERS;
+ root.classList.toggle('spacing-mode',inSpacing);
+ root.querySelector('.five-dock-head strong').textContent=inSpacing?'5点数值变化':'5个观测对象';
+ $('leaveFive').textContent=inSpacing?'返回5点':'全部数据';
+ $('fiveRows').innerHTML=labs.map((a,i)=>`<tr><td><span class="object-letter">${a}</span></td><td class="number" title="${d.xs[i]}">${formatFiveValue(d.xs[i])}</td><td class="number" title="${d.ys[i]}">${formatFiveValue(d.ys[i])}</td><td class="answer">${state.sampleRevealed?d.rx[i]:'—'}</td><td class="answer">${state.sampleRevealed?d.ry[i]:'—'}</td></tr>`).join('');
  $('revealFive').disabled=state.sampleRevealed;$('nextFive').disabled=!state.sampleRevealed||state.sampleStep>=5;$('allFive').disabled=!state.sampleRevealed||state.sampleStep>=5;
- $('fiveProgress').textContent=!state.sampleRevealed?'秩尚未计算':state.sampleStep===5?'5/5个点':`${state.sampleStep}/5个点`;
+ $('fiveExtension').hidden=!state.sampleRevealed||inSpacing;$('fiveSpacingControls').hidden=!inSpacing;
+ $('fiveSpacingValue').textContent=String(state.spacingValue);$('fiveSpacingSlider').value=String(state.spacingValue);
+ $('fiveProgress').textContent=inSpacing?`Pearson ${fmt(corr(d.xs,d.ys))}  ·  两列秩始终一致`:
+  (!state.sampleRevealed?'秩尚未计算':state.sampleStep===5?'5/5个点':`${state.sampleStep}/5个点`);
 }
-function enterFive(){if(state.scene==='clinical')return;cancelAnimation();state.sampleIndices=sampleIndices(state.X.length);state.sampleActive=true;state.sampleRevealed=false;state.sampleStep=0;state.ranksVisible=false;state.verified=false;state.pointerIndex=-1;updateFivePanel();updateTakeaway();render();}
-function leaveFive(){state.sampleActive=false;state.sampleIndices=[];state.sampleRevealed=false;state.sampleStep=0;state.ranksVisible=false;state.verified=false;updateFivePanel();updateTakeaway();render();}
-function resetFive(){state.sampleActive=false;state.sampleIndices=[];state.sampleRevealed=false;state.sampleStep=0;updateFivePanel();}
+function enterFive(){if(state.scene==='clinical')return;cancelAnimation();state.sampleIndices=sampleIndices(state.X.length);state.sampleActive=true;state.sampleRevealed=false;state.sampleStep=0;state.spacingFocus=false;state.spacingValue=5;state.ranksVisible=false;state.verified=false;state.pointerIndex=-1;updateFivePanel();updateTakeaway();render();}
+function leaveFive(){if(state.spacingFocus){exitSpacing();return;}state.sampleActive=false;state.sampleIndices=[];state.sampleRevealed=false;state.sampleStep=0;state.ranksVisible=false;state.verified=false;updateFivePanel();updateTakeaway();render();}
+function resetFive(){state.sampleActive=false;state.sampleIndices=[];state.sampleRevealed=false;state.sampleStep=0;state.spacingFocus=false;state.spacingValue=5;updateFivePanel();}
 function makeFiveVisible(){if(!state.sampleActive)return;state.sampleRevealed=true;state.ranksVisible=true;state.sampleStep=0;updateFivePanel();render();}
-function advanceFive(all=false){if(!state.sampleActive||!state.sampleRevealed)return;state.sampleStep=all?5:Math.min(5,state.sampleStep+1);updateFivePanel();render();}
-function drawSpacing(){const v=+$('spacingSlider').value;const svg=$('spacingMini');svg.replaceChildren();$('spacingValue').textContent='Y₅='+v;$('spacingNumber').textContent=v;$('spacingPearson').textContent=fmt(corr([1,2,3,4,5],[1,2,3,4,v]));
- const xmin=25,ymin=134,xmax=306,ymax=10;let yy=v<=10?10:v<=25?25:v<=50?50:v<=100?100:220;svgEl(svg,'line',{x1:xmin,y1:ymax,x2:xmin,y2:ymin,stroke:'#7b90ad','stroke-width':1.3});svgEl(svg,'line',{x1:xmin,y1:ymin,x2:xmax,y2:ymin,stroke:'#7b90ad','stroke-width':1.3});
- for(let j=1;j<=5;j++){const x=xmin+((j-.7)/4.6)*(xmax-xmin),y=ymin-([1,2,3,4,v][j-1]/yy)*(ymin-ymax);svgEl(svg,'circle',{cx:x,cy:y,r:j===5?6.5:5,fill:j===5?col.orange:col.blue,stroke:'#fff','stroke-width':1.5});svgEl(svg,'text',{x,y:ymin+16,'text-anchor':'middle',fill:'#758aa4','font-size':11},j)}
- svgEl(svg,'text',{x:165,y:154,'text-anchor':'middle',fill:'#68819e','font-size':12},'X');svgEl(svg,'text',{x:14,y:20,'text-anchor':'middle',fill:'#68819e','font-size':12},'Y');}
+function advanceFive(all=false){if(!state.sampleActive||!state.sampleRevealed||state.spacingFocus)return;state.sampleStep=all?5:Math.min(5,state.sampleStep+1);updateFivePanel();render();}
+function startSpacing(){if(!state.sampleActive||!state.sampleRevealed)return;state.preSpacingStep=state.sampleStep;state.spacingFocus=true;state.spacingValue=5;state.sampleStep=5;state.ranksVisible=true;state.verified=false;updateFivePanel();updateTakeaway();render();}
+function exitSpacing(){state.spacingFocus=false;state.sampleStep=state.preSpacingStep;state.verified=false;updateSceneText();updateFivePanel();updateTakeaway();render();}
+function setSpacing(v){if(!state.spacingFocus)return;state.spacingValue=Math.max(5,Math.min(200,+v));updateFivePanel();updateTakeaway();render();}
 function monotone(t,k,scene){if(scene==='power')return {x:t,y:Math.pow(t,k),yplot:Math.pow(t,k)};
  if(scene==='exp'){const y=k===0?t:Math.expm1(k*t)/Math.expm1(k);return {x:t,y,yplot:y}}
  // Under finite-precision arithmetic, 1-(1-t)^k can round to 1.
@@ -180,19 +193,26 @@ function generate(){const scene=state.scene,k=state.k[scene],n=scene==='clinical
  state.curve=scene==='clinical'?t=>({x:clinicalX(t),y:clinicalMean(t,k)}):t=>{const v=monotone(t,k,scene);return{x:v.x,y:v.yplot}};
 }
 function svgEl(svg,tag,attrs={},str){let el=document.createElementNS(NS,tag);Object.entries(attrs).forEach(([a,v])=>el.setAttribute(a,String(v)));if(str!==undefined)el.textContent=str;svg.appendChild(el);return el;}
-function bounds(){return state.scene==='clinical'?{xmin:4,xmax:9,ymin:0,ymax:30}:state.scene==='double'?{xmin:0,xmax:1,ymin:-1,ymax:0}:{xmin:0,xmax:1,ymin:0,ymax:1}}
+function bounds(){if(state.spacingFocus)return{xmin:1,xmax:5,ymin:0,ymax:state.spacingValue<=10?10:state.spacingValue<=25?25:state.spacingValue<=50?50:state.spacingValue<=100?100:220};return state.scene==='clinical'?{xmin:4,xmax:9,ymin:0,ymax:30}:state.scene==='double'?{xmin:0,xmax:1,ymin:-1,ymax:0}:{xmin:0,xmax:1,ymin:0,ymax:1}}
 function coordX(v,b){return L+(v-b.xmin)/(b.xmax-b.xmin)*PW}
 function coordY(v,b){return H-B-(v-b.ymin)/(b.ymax-b.ymin)*PH}
-function axes(svg,rankMode){const n=rankMode&&state.sampleActive?5:state.X.length,b=rankMode?{xmin:1,xmax:n,ymin:1,ymax:n}:bounds(),ticks=rankMode?[0,.25,.5,.75,1]:[0,.2,.4,.6,.8,1];
+function axes(svg,rankMode){const n=rankMode&&state.sampleActive?5:state.X.length,b=rankMode?{xmin:1,xmax:n,ymin:1,ymax:n}:bounds(),ticks=(rankMode||state.spacingFocus)?[0,.25,.5,.75,1]:[0,.2,.4,.6,.8,1];
  for(const frac of ticks){const xx=L+frac*PW,yy=H-B-frac*PH;svgEl(svg,'line',{x1:xx,y1:T,x2:xx,y2:H-B,class:'gridline'});svgEl(svg,'line',{x1:L,y1:yy,x2:W-R,y2:yy,class:'gridline'});
- const xval=rankMode?Math.round(1+frac*(n-1)):(state.scene==='clinical'?(b.xmin+frac*(b.xmax-b.xmin)).toFixed(0):frac.toFixed(1));
- const yval=rankMode?Math.round(1+frac*(n-1)):(state.scene==='clinical'?Math.round(b.ymin+frac*(b.ymax-b.ymin)):(b.ymin+frac*(b.ymax-b.ymin)).toFixed(1));
+ const xval=rankMode?Math.round(1+frac*(n-1)):(state.spacingFocus?(1+4*frac).toFixed(0):(state.scene==='clinical'?(b.xmin+frac*(b.xmax-b.xmin)).toFixed(0):frac.toFixed(1)));
+ const yval=rankMode?Math.round(1+frac*(n-1)):(state.spacingFocus?Math.round(b.ymin+frac*(b.ymax-b.ymin)):(state.scene==='clinical'?Math.round(b.ymin+frac*(b.ymax-b.ymin)):(b.ymin+frac*(b.ymax-b.ymin)).toFixed(1)));
  svgEl(svg,'text',{x:xx,y:H-B+23,'text-anchor':'middle',class:'tick'},xval);svgEl(svg,'text',{x:L-11,y:yy+5,'text-anchor':'end',class:'tick'},yval)}
  svgEl(svg,'line',{x1:L,y1:T,x2:L,y2:H-B,class:'axis'});svgEl(svg,'line',{x1:L,y1:H-B,x2:W-R,y2:H-B,class:'axis'});
- svgEl(svg,'text',{x:(L+W-R)/2,y:H-13,'text-anchor':'middle',class:'axisname'},rankMode?'X的秩 R(X)':cfg[state.scene].xLabel);
- svgEl(svg,'text',{x:17,y:(T+H-B)/2,transform:`rotate(-90 17 ${(T+H-B)/2})`,'text-anchor':'middle',class:'axisname'},rankMode?'Y的秩 R(Y)':cfg[state.scene].yLabel);
+ svgEl(svg,'text',{x:(L+W-R)/2,y:H-13,'text-anchor':'middle',class:'axisname'},rankMode?'X的秩 R(X)':(state.spacingFocus?'X':cfg[state.scene].xLabel));
+ svgEl(svg,'text',{x:17,y:(T+H-B)/2,transform:`rotate(-90 17 ${(T+H-B)/2})`,'text-anchor':'middle',class:'axisname'},rankMode?'Y的秩 R(Y)':(state.spacingFocus?'Y':cfg[state.scene].yLabel));
  return b;}
-function renderRaw(){const svg=$('raw');svg.replaceChildren();const b=axes(svg,false),n=state.X.length;
+function renderRaw(){const svg=$('raw');svg.replaceChildren();
+ if(state.spacingFocus){const b=bounds();axes(svg,false);const vals=[1,2,3,4,state.spacingValue];
+  for(let j=0;j<5;j++){const x=coordX(j+1,b),y=coordY(vals[j],b);if(j===4){svgEl(svg,'line',{x1:x,y1:coordY(5,b),x2:x,y2:y,stroke:col.orange,'stroke-width':3,opacity:.30,'stroke-dasharray':'5 6'});}
+   svgEl(svg,'circle',{cx:x,cy:y,r:j===4?10:8,fill:j===4?col.orange:col.blue,stroke:'#fff','stroke-width':2.1});
+   svgEl(svg,'text',{x:x+12,y:y-10,fill:j===4?'#a96316':'#24569d','font-size':17,'font-weight':800,stroke:'#fff','stroke-width':3,'paint-order':'stroke'},String(j+1));}
+  return;
+ }
+ const b=axes(svg,false),n=state.X.length;
  if(!state.manual&&(state.scene!=='clinical'||state.clinicalTrend)){let d='';for(let i=0;i<=280;i++){const t=i/280,v=state.curve(t);const x=coordX(v.x,b),y=coordY(v.y,b);d+=(i===0?'M':' L')+x.toFixed(2)+' '+y.toFixed(2)}svgEl(svg,'path',{d,fill:'none',stroke:'#8dbce8','stroke-width':2.4,'stroke-dasharray':'6 7','stroke-linecap':'round',opacity:.9})}
  const r=n<=20?5.8:n<=80?4.3:n<=200?3.4:2.6;
  for(let i=0;i<n;i++){const x=coordX(state.X[i],b),y=coordY(state.Yplot[i],b),active=i===state.pointerIndex;
@@ -219,8 +239,8 @@ function renderRank(){const svg=$('ranks');svg.replaceChildren();
   if(state.sampleRevealed&&state.sampleStep>0)svgEl(svg,'line',{x1:rx(1),y1:ry(1),x2:rx(5),y2:ry(5),stroke:'#95d1c9','stroke-width':2,'stroke-dasharray':'6 8'});
   if(state.sampleRevealed)for(let j=0;j<state.sampleStep;j++){
    const x=rx(d.rx[j]),y=ry(d.ry[j]);
-   svgEl(svg,'circle',{cx:x,cy:y,r:13,fill:col.teal,stroke:'#fff','stroke-width':1.5});
-   svgEl(svg,'text',{x,y:y+4.8,'text-anchor':'middle','font-size':13,'font-weight':800,fill:'#fff'},FIVE_LETTERS[j]);
+   svgEl(svg,'circle',{cx:x,cy:y,r:13,fill:state.spacingFocus&&j===4?col.orange:col.teal,stroke:'#fff','stroke-width':1.5});
+   svgEl(svg,'text',{x,y:y+4.8,'text-anchor':'middle','font-size':13,'font-weight':800,fill:'#fff'},state.spacingFocus?String(j+1):FIVE_LETTERS[j]);
   }
   return corr(d.rx,d.ry);
  }
@@ -237,10 +257,10 @@ function renderSpark(){const svg=$('spark');svg.replaceChildren();svgEl(svg,'rec
  const p=h.map((v,i)=>`${i?'L':'M'}${(7+i/(h.length-1)*139).toFixed(1)},${(49-(v+1)/2*39).toFixed(1)}`).join(' ');svgEl(svg,'path',{d:p,fill:'none',stroke:'#2b77d4','stroke-width':2.5,'stroke-linecap':'round'});svgEl(svg,'circle',{cx:146,cy:49-(h.at(-1)+1)/2*39,r:3.6,fill:col.orange});
 }
 function getRankSummary(r){if(!state.ranksVisible)return '未显示';if(state.scene!=='clinical'&&!state.manual&&Math.abs(r-1)<1e-10)return '两列秩完全一致';if(Math.abs(r-1)<1e-10)return '两列秩完全一致';if(r>.5)return '总体呈同向秩关系';if(r<-.5)return '总体呈反向秩关系';return '秩关系并非完全一致'}
-function render(){renderRaw();const rp=corr(state.X,state.Y),rs=renderRank();$('pearson').textContent=state.scene==='clinical'&&!state.clinicalPearson?'—':fmt(state.sampleActive?corr(sampleData().xs,sampleData().ys):rp);$('pearsonLabel').textContent=state.sampleActive?'Pearson（选中5点）':'Pearson 相关系数';$('spark').style.visibility=state.scene==='clinical'?'hidden':'visible';$('rankMask').hidden=state.ranksVisible||state.sampleActive;$('rankMask').querySelector('strong').textContent='秩关系';$('rankMask').querySelector('p').textContent='点击「显示秩图」';
+function render(){if(state.spacingFocus){$('rawTitle').textContent='5点数值变化：X与Y';$('rawNote').textContent='前4点固定，第5点上下移动';$('sceneTitle').textContent='独立5点示例：改变Y₅';$('formula').textContent='X=(1,2,3,4,5) · Y=(1,2,3,4,Y₅)';$('disclaimer').textContent='5个观测点 · 无随机误差';$('countTop').textContent='5点数值变化';$('pointInfo').textContent='5个观测点';}else{$('rawTitle').textContent=state.scene==='clinical'?'原始数据：海马体积与MMSE':'原始数据 X 与 Y';$('rawNote').textContent=state.scene==='clinical'?(state.clinicalTrend?'虚线：预设模拟趋势':'固定模拟数据'):'虚线：函数曲线（非拟合线）';}renderRaw();const rp=corr(state.X,state.Y),rs=renderRank();$('pearson').textContent=state.scene==='clinical'&&!state.clinicalPearson?'—':fmt(state.sampleActive?corr(sampleData().xs,sampleData().ys):rp);$('pearsonLabel').textContent=state.spacingFocus?'Pearson（5点数值变化）':state.sampleActive?'Pearson（选中5点）':'Pearson 相关系数';$('spark').style.visibility=state.scene==='clinical'||state.spacingFocus?'hidden':'visible';$('rankMask').hidden=state.ranksVisible||state.sampleActive;$('rankMask').querySelector('strong').textContent='秩关系';$('rankMask').querySelector('p').textContent='点击「显示秩图」';
  $('showRank').textContent=state.ranksVisible?'隐藏秩图':'显示秩图';$('showRank').setAttribute('aria-pressed',String(state.ranksVisible));$('verify').disabled=!state.ranksVisible||(state.sampleActive&&state.sampleStep<5);$('verify').textContent=state.verified?'隐藏Spearman':'显示Spearman';$('verify').setAttribute('aria-pressed',String(state.verified));
  $('rankMetricTitle').textContent=state.verified?'Spearman 秩相关系数':'秩关系';$('spearman').hidden=!state.verified;$('spearman').textContent=fmt(rs);$('rankSummary').hidden=state.verified;
- $('rankSummary').textContent=state.sampleActive?(state.sampleRevealed?`${state.sampleStep}/5个点`:'5个点'):getRankSummary(rs);$('rankSummary').classList.toggle('muted',!state.ranksVisible);$('rankDescription').textContent=state.verified?'对两列秩计算Pearson相关系数':state.sampleActive?'选中5个对象的内部秩':state.ranksVisible?(state.scene==='clinical'?'MMSE并列值使用平均秩':'X与Y的秩散点'):'秩图';
+ $('rankSummary').textContent=state.spacingFocus?'秩保持一致':state.sampleActive?(state.sampleRevealed?`${state.sampleStep}/5个点`:'5个点'):getRankSummary(rs);$('rankSummary').classList.toggle('muted',!state.ranksVisible);$('rankDescription').textContent=state.verified?'对两列秩计算Pearson相关系数':state.spacingFocus?'R(X)=R(Y)，不随Y₅数值改变':state.sampleActive?'选中5个对象的内部秩':state.ranksVisible?(state.scene==='clinical'?'MMSE并列值使用平均秩':'X与Y的秩散点'):'秩图';
  $('progressFill').style.width=(state.progress*100).toFixed(1)+'%';renderSpark();
 }
 function updateSceneText(){const sc=state.scene,c=cfg[sc];$('sceneTitle').textContent=c.label;$('rawTitle').textContent=sc==='clinical'?'原始数据：海马体积与MMSE':'原始数据 X 与 Y';$('disclaimer').textContent=sc==='clinical'?'固定模拟数据 · 非真实临床结果':'数学模型 · 无随机误差';$('countTop').textContent=sc==='clinical'?'模拟数据 · 100名受试者':`数学函数 · ${state.n}个点`;
@@ -252,7 +272,7 @@ function updateSceneText(){const sc=state.scene,c=cfg[sc];$('sceneTitle').textCo
  $('footnote').textContent=sc==='clinical'?'固定模拟数据：100名受试者；MMSE评分0—30分，重复值使用平均秩。虚线为预设模拟趋势，非回归拟合。':
  'tᵢ=(i−0.5)/n。函数模型无随机误差。双向弯曲使用数值稳定的等价平移形式 Y=−(1−t)ᵏ；左图和秩图采用相同的数据。';
 }
-function updateTakeaway(){const sc=state.scene,k=state.k[sc];if(state.sampleActive){$('phaseState').textContent='5点模式';$('takeaway').innerHTML='当前显示5个选中观测对象的Pearson系数和秩关系。';return}
+function updateTakeaway(){const sc=state.scene,k=state.k[sc];if(state.spacingFocus){$('phaseState').textContent='第5点Y值变化';$('takeaway').innerHTML=`Y₅ = <b>${state.spacingValue}</b>，Pearson = <b>${fmt(corr([1,2,3,4,5],[1,2,3,4,state.spacingValue]))}</b>，两列秩保持一致。`;return;}if(state.sampleActive){$('phaseState').textContent='5点模式';$('takeaway').innerHTML='当前显示5个选中观测对象的Pearson系数和秩关系。';return}
  if(state.manual){$('phaseState').textContent='自定义数据';$('takeaway').innerHTML='已修改观测值。';return}
  if(sc==='clinical'){$('phaseState').textContent='脑健康模拟';$('takeaway').innerHTML='固定模拟数据 · 海马体积与MMSE评分。';return}
  $('phaseState').textContent=k===cfg[sc].kmin?'线性基准':k>=cfg[sc].highlight*.9?'强非线性曲线':'非线性曲线';
@@ -276,7 +296,7 @@ function play(){if(state.scene==='clinical')return;if(!state.anim){cancelAnimati
 }
 function dragCoordinates(e){let rect=$('raw').getBoundingClientRect();return {x:(e.clientX-rect.left)*W/rect.width,y:(e.clientY-rect.top)*H/rect.height}}
 const plot=$('raw');
-plot.addEventListener('pointerdown',e=>{if(state.scene==='clinical'||!$('manualMode').checked)return;const p=dragCoordinates(e),b=bounds();let best=1e9,idx=-1;
+plot.addEventListener('pointerdown',e=>{if(state.scene==='clinical'||state.spacingFocus||!$('manualMode').checked)return;const p=dragCoordinates(e),b=bounds();let best=1e9,idx=-1;
  for(let i=0;i<state.X.length;i++){const dx=coordX(state.X[i],b)-p.x,dy=coordY(state.Yplot[i],b)-p.y,d=dx*dx+dy*dy;if(d<best){best=d;idx=i}}
  if(idx<0||best>21*21)return;cancelAnimation();state.drag={i:idx};state.manual=true;state.pointerIndex=idx;plot.setPointerCapture(e.pointerId);recordHistory(true);e.preventDefault();});
 plot.addEventListener('pointermove',e=>{if(!state.drag)return;const p=dragCoordinates(e),b=bounds();let val=clamp(b.ymin+(H-B-p.y)/PH*(b.ymax-b.ymin),b.ymin,b.ymax);if(state.scene==='clinical')val=Math.round(val);
@@ -286,7 +306,7 @@ plot.addEventListener('pointerup',endDrag);plot.addEventListener('pointercancel'
 $('curveInput').addEventListener('input',e=>{if(state.scene==='clinical')return;cancelAnimation();state.progress=0;state.k[state.scene]=+e.target.value;refresh(false)});
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>switchScene(b.dataset.scene)));
 document.querySelectorAll('.n-btn').forEach(b=>b.addEventListener('click',()=>{if(state.scene==='clinical')return;cancelAnimation();state.n=+b.dataset.n;state.progress=0;refresh(true)}));
-$('play').addEventListener('click',play);$('pickFive').addEventListener('click',enterFive);$('leaveFive').addEventListener('click',leaveFive);$('revealFive').addEventListener('click',makeFiveVisible);$('nextFive').addEventListener('click',()=>advanceFive(false));$('allFive').addEventListener('click',()=>advanceFive(true));$('spacingSlider').addEventListener('input',drawSpacing);
+$('play').addEventListener('click',play);$('pickFive').addEventListener('click',enterFive);$('leaveFive').addEventListener('click',leaveFive);$('revealFive').addEventListener('click',makeFiveVisible);$('nextFive').addEventListener('click',()=>advanceFive(false));$('allFive').addEventListener('click',()=>advanceFive(true));$('startSpacing').addEventListener('click',startSpacing);$('fiveSpacingSlider').addEventListener('input',e=>setSpacing(e.target.value));
 $('mildCurve').addEventListener('click',()=>{if(state.scene==='clinical')return;cancelAnimation();const mildK={power:2,exp:8,double:5};state.progress=0;setK(mildK[state.scene],true)});
 $('example').addEventListener('click',example);$('reset').addEventListener('click',reset);
 $('showTrend').addEventListener('click',()=>{if(state.scene!=='clinical')return;state.clinicalTrend=!state.clinicalTrend;updateSceneText();updateTakeaway();render()});
@@ -296,7 +316,7 @@ $('verify').addEventListener('click',()=>{if(!state.ranksVisible)return;state.ve
 $('manualMode').addEventListener('change',e=>{if(state.sampleActive){e.target.checked=false;return}if(state.scene==='clinical'){e.target.checked=false;return}if(!e.target.checked)state.pointerIndex=-1;render()});
 $('full').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch(e){$('full').textContent='可按 F11 全屏'}});
 document.addEventListener('fullscreenchange',()=>$('full').textContent=document.fullscreenElement?'退出全屏':'全屏展示');
-refresh(true);drawSpacing();
+refresh(true);
 })();
 </script>
 </body></html>
