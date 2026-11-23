@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#070e20"><meta name="description" content="非参数统计实验室：数字康复综合实验、Spearman秩相关与精确零分布交互实验。">
+<title>非参数统计实验室 | NP LAB</title>
+<link rel="stylesheet" href="./assets/style.css"><script defer src="./assets/home.js"></script>
+</head>
+<body class="site home-page">
+<header class="top"><div class="wrap topinner">
+<a class="brand" href="./index.html"><span class="logo-mark">N<span>·</span>P</span><span class="brand-copy">非参数统计实验室<small>NONPARAMETRIC LAB</small></span></a>
+<nav class="topnav" aria-label="网站导航"><a class="active" href="./index.html">概览</a><a href="./clinical-lab.html">综合实验</a><a href="#experiments">实验库</a><a href="./teacher.html">实验记录</a></nav>
+<a class="nav-cta" href="./clinical-lab.html">进入工作台 <span aria-hidden="true">↗</span></a>
+</div></header>
+<main>
+<section class="hero hero-home"><div class="wrap hero-layout">
+<div class="hero-content">
+<div class="eyebrow"><span class="live-dot"></span> NP LAB <span class="eyebrow-divider"></span> INTERACTIVE STATISTICS</div>
+<div class="hero-kicker">NONPARAMETRIC STATISTICS</div>
+<h1>探索数据的秩序<span class="accent-punct">.</span><br><span class="gradient-text">检验每一个判断</span></h1>
+<p class="lead">从研究设计到统计推断，在交互实验中观察抽样波动、检验分布与分析决策。</p>
+<div class="hero-actions"><a class="btn primary large" href="./clinical-lab.html">开始综合实验 <span aria-hidden="true">↗</span></a><a class="btn outline large" href="#experiments">浏览实验模块 <span aria-hidden="true">↓</span></a></div>
+<div class="hero-minor"><span><i class="check-dot"></i> 无需安装</span><span><i class="check-dot"></i> 模拟数据</span><span><i class="check-dot"></i> 操作实时反馈</span></div>
+</div>
+<div class="hero-visual" aria-label="数据分布动态示意图">
+<div class="visual-top"><span><span class="small-led"></span> DISTRIBUTION MONITOR</span><span>NP / 001</span></div>
+<div class="visual-metrics"><div><span>研究对象</span><strong>03 <small>GROUPS</small></strong></div><div><span>检验任务</span><strong>25 <small>STEPS</small></strong></div><div><span>统计分析</span><strong>07 <small>METHODS</small></strong></div></div>
+<svg class="viz-svg" viewBox="0 0 640 315" role="img" aria-label="三组概率分布曲线与观测点示意，不代表真实研究数据">
+<defs><linearGradient id="lineA" x1="0" x2="1"><stop stop-color="#55e8ee"/><stop offset="1" stop-color="#4da3ff"/></linearGradient><linearGradient id="lineB" x1="0" x2="1"><stop stop-color="#b4a0ff"/><stop offset="1" stop-color="#8f6cff"/></linearGradient><linearGradient id="fillA" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#48ddea" stop-opacity=".27"/><stop offset="1" stop-color="#48ddea" stop-opacity="0"/></linearGradient></defs>
+<g class="viz-grid"><path d="M36 40H611M36 94H611M36 148H611M36 202H611M36 256H611M36 40V269M131 40V269M226 40V269M321 40V269M416 40V269M511 40V269M611 40V269"/></g>
+<g class="plot-fill"><path d="M37 258 C78 258 95 244 122 220 S173 122 222 113 S312 164 347 210 S422 254 608 258 V260 H37Z" fill="url(#fillA)"/></g>
+<path class="curve-a" d="M37 258 C78 258 95 244 122 220 S173 122 222 113 S312 164 347 210 S422 254 608 258" fill="none" stroke="url(#lineA)" stroke-width="3.4" stroke-linecap="round"/>
+<path class="curve-b" d="M37 260 C94 260 158 251 193 227 S260 143 313 115 S390 136 435 192 S522 254 608 259" fill="none" stroke="url(#lineB)" stroke-width="3" stroke-linecap="round"/>
+<path class="curve-c" d="M37 261 C164 260 230 257 282 236 S388 148 451 132 S530 175 559 222 S594 254 608 259" fill="none" stroke="#ffc17d" stroke-width="2.7" stroke-linecap="round"/>
+<g fill="#5ee6ea" opacity=".84"><circle cx="99" cy="233" r="3.5"/><circle cx="156" cy="163" r="3.5"/><circle cx="213" cy="112" r="4.5"/><circle cx="255" cy="126" r="3.5"/></g>
+<g fill="#ae90ff" opacity=".84"><circle cx="237" cy="185" r="3.5"/><circle cx="311" cy="117" r="4.5"/><circle cx="361" cy="127" r="3.5"/><circle cx="433" cy="193" r="3.5"/></g>
+<g fill="#ffc17d" opacity=".85"><circle cx="353" cy="200" r="3.5"/><circle cx="451" cy="132" r="4.5"/><circle cx="507" cy="154" r="3.5"/></g>
+<g class="axis-label"><text x="36" y="290">0.0</text><text x="219" y="290">0.5</text><text x="408" y="290">1.0</text><text x="582" y="290">1.5</text></g>
+</svg>
+<div class="visual-bottom"><span><i class="dot cyan"></i> 常规管理</span><span><i class="dot violet"></i> App指导</span><span><i class="dot amber"></i> 混合干预</span><span class="visual-caption">SIMULATED DISTRIBUTIONS</span></div>
+</div>
+</div></section>
+<div class="wrap">
+<section class="overview-strip" aria-label="实验概览"><div><strong>25<span>步</span></strong><small>综合实验流程</small></div><div><strong>100<span>分</span></strong><small>过程评价</small></div><div><strong>03<span>组</span></strong><small>研究方案</small></div><div><strong>02<span>个</span></strong><small>秩相关专题实验</small></div></section>
+<section class="section experiments-section" id="experiments"><div class="section-title"><div><div class="eyebrow section-eyebrow">EXPERIMENT LIBRARY / 01</div><h2>实验模块</h2><p>选择实验，进入独立工作区。</p></div><span class="section-count">01 — 03</span></div>
+<div class="experiment-grid">
+<a class="experiment-card featured" href="./clinical-lab.html"><div class="exp-top"><span class="exp-index">01 / INTEGRATED LAB</span><span class="exp-state"><span class="small-led"></span> 可进入</span></div><div class="exp-glyph" aria-hidden="true"><svg viewBox="0 0 310 152"><g stroke="#4d688c" opacity=".32"><path d="M0 35H310M0 76H310M0 117H310M39 0V152M112 0V152M185 0V152M258 0V152"/></g><path d="M9 124 C66 126 65 112 99 100 S152 30 196 49 S262 78 301 22" stroke="#62e1ec" stroke-width="3.5" fill="none"/><path d="M9 133 C69 124 78 132 112 104 S170 113 202 87 S264 35 301 41" stroke="#a98dff" stroke-width="3" fill="none"/><g fill="#6ce4ef"><circle cx="99" cy="100" r="6"/><circle cx="196" cy="49" r="6"/><circle cx="301" cy="22" r="6"/></g></svg></div><div class="exp-main"><span class="type-line">综合实验 · 4学时</span><h3>数字康复疗效评价</h3><p>研究方案 · 虚拟随访 · 秩检验 · 敏感性分析</p><div class="exp-footer"><div class="chips"><span>25步交互</span><span>统计仿真</span><span>实验报告</span></div><span class="circle-arrow">↗</span></div></div></a>
+<a class="experiment-card" href="./labs/spearman-rank-lab.html"><div class="exp-top"><span class="exp-index">02 / RANK CORRELATION</span><span class="exp-arrow">↗</span></div><div class="mini-art rank-art" aria-hidden="true"><svg viewBox="0 0 380 148"><g stroke="#527398" opacity=".22"><path d="M16 23H366M16 72H366M16 122H366M75 15V132M177 15V132M279 15V132"/></g><g fill="#59dbe1"><circle cx="39" cy="119" r="5"/><circle cx="77" cy="107" r="5"/><circle cx="117" cy="89" r="5"/><circle cx="158" cy="78" r="5"/><circle cx="208" cy="56" r="5"/><circle cx="262" cy="36" r="5"/><circle cx="320" cy="20" r="5"/></g><path d="M36 120 Q169 89 323 20" fill="none" stroke="#7cdce8" stroke-dasharray="5 7" opacity=".5"/></svg></div><div class="exp-main"><span class="type-line">专题实验 · Spearman</span><h3>非线性关系与秩</h3><p>比较Pearson与Spearman相关，观察非线性单调关系。</p><div class="exp-footer"><div class="chips"><span>交互散点图</span><span>秩次演示</span></div><span class="circle-arrow">↗</span></div></div></a>
+<a class="experiment-card" href="./labs/spearman-null-lab.html"><div class="exp-top"><span class="exp-index">03 / NULL DISTRIBUTION</span><span class="exp-arrow">↗</span></div><div class="mini-art dist-art" aria-hidden="true"><svg viewBox="0 0 380 148"><g stroke="#527398" opacity=".22"><path d="M16 23H366M16 72H366M16 122H366M75 15V132M177 15V132M279 15V132"/></g><g fill="#9d90fd" opacity=".8"><rect x="42" y="105" width="20" height="18" rx="3"/><rect x="71" y="95" width="20" height="28" rx="3"/><rect x="100" y="80" width="20" height="43" rx="3"/><rect x="129" y="61" width="20" height="62" rx="3"/><rect x="158" y="37" width="20" height="86" rx="3"/><rect x="187" y="28" width="20" height="95" rx="3"/><rect x="216" y="51" width="20" height="72" rx="3"/><rect x="245" y="73" width="20" height="50" rx="3"/><rect x="274" y="97" width="20" height="26" rx="3"/><rect x="303" y="106" width="20" height="17" rx="3"/></g><path d="M331 19V126" stroke="#ffd093" stroke-width="2.5" stroke-dasharray="6 6"/></svg></div><div class="exp-main"><span class="type-line">专题实验 · Exact / Monte Carlo</span><h3>Spearman精确零分布</h3><p>从全部排列到零分布，计算双侧精确P值。</p><div class="exp-footer"><div class="chips"><span>精确穷举</span><span>Monte Carlo</span></div><span class="circle-arrow">↗</span></div></div></a>
+</div></section>
+<section class="record-row"><div><div class="eyebrow">EXPERIMENT RECORD</div><h2>实验记录</h2><p id="homeProgressText">查看本设备的实验进度与成绩。</p></div><div class="record-actions"><span class="record-score" id="homeScore">— / 100</span><a class="btn outline" href="./teacher.html">查看记录 ↗</a></div></section>
+</div>
+</main>
+<footer class="footer"><div class="wrap footer-inner"><div><span class="footer-brand">NP<span>·</span>LAB</span> <span>非参数统计实验室</span></div><span>实验数据为模拟生成，不代表真实临床结果。</span></div></footer>
+</body></html>
