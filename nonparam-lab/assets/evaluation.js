@@ -1,0 +1,9 @@
+(()=>{'use strict';const kb=window.NPLTutorKnowledge||[],cases=window.NPLTutorEvaluationCases||[],get=window.NPLKBSearch?.retrieve;
+const $=id=>document.getElementById(id),esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let results=[];
+function run(){if(!get)return;$('metric-kb').textContent=String(kb.length);results=cases.map(test=>{const hit=get(test.query,kb,3).map(x=>x.entry.id),ok=test.expected?hit.includes(test.expected):hit.length===0;return {...test,found:hit,ok};});
+const positive=results.filter(x=>x.expected),unknown=results.filter(x=>!x.expected),top=positive.filter(x=>x.ok).length,abstain=unknown.filter(x=>x.ok).length;
+$('metric-hit').textContent=top+'/'+positive.length;$('metric-abstain').textContent=abstain+'/'+unknown.length;
+$('eval-status').textContent='已完成 '+results.length+' 项 · '+results.filter(x=>x.ok).length+' 项通过';
+const ids=Object.fromEntries(kb.map(k=>[k.id,k.title]));$('eval-rows').innerHTML=results.map(x=>`<tr><td>${esc(x.id)}</td><td>${esc(x.query)}</td><td>${esc(x.expected?ids[x.expected]||x.expected:'应拒答')}</td><td>${esc(x.found.map(id=>ids[id]||id).join('；')||'无匹配')}</td><td class="${x.ok?'eval-pass':'eval-fail'}">${x.ok?'通过':'需检查'}</td></tr>`).join('');}
+function exportCsv(){if(!results.length)run();const cells=[['编号','测试问题','期望知识点','命中知识点','是否通过'],...results.map(x=>[x.id,x.query,x.expected||'无匹配',x.found.join('|'),x.ok?'通过':'失败'])];const s='\ufeff'+cells.map(r=>r.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(',')).join('\r\n');const u=URL.createObjectURL(new Blob([s],{type:'text/csv;charset=utf-8'})),a=document.createElement('a');a.href=u;a.download='知识库检索评测.csv';a.click();setTimeout(()=>URL.revokeObjectURL(u),1200);}
+$('evaluate').addEventListener('click',run);$('eval-export').addEventListener('click',exportCsv);run();})();

@@ -1,0 +1,12 @@
+/* Unified shell for the two existing standalone Spearman experiments. */
+:root{--bg:#081223;--navy:#0c2341;--blue:#347ac8;--blue2:#407fce;--paper:#fff}
+body{background:radial-gradient(ellipse 65% 45% at 90% -10%,#23507d6b,transparent 75%),#081326!important}
+.topbar,.top{background:linear-gradient(110deg,#0d213c,#143755 72%,#10475b)!important;border-bottom:1px solid #4665866a;box-shadow:0 4px 35px #03091766!important}
+.topbar .brand,.top .brand{letter-spacing:0!important}
+.hub-return{display:inline-flex;align-items:center;justify-content:center;color:#a9f0f5!important;border:1px solid #6cc9da80;background:#1439509c;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:750;white-space:nowrap;margin-left:auto;transition:background .18s,border-color .18s}
+.hub-return:hover{background:#21526d;border-color:#82ecf2;text-decoration:none!important}
+.topbar .fullscreen,.top .full{margin-left:8px}
+.headline h1,.titleline h1{color:#edf7ff!important}.headline p,.titleline .sub,.hzero,.smalltag{color:#a5c1dd!important}
+.settings,.panel,.figure,.controls,.conclusion{box-shadow:0 16px 42px #0004!important;border-color:#bad2e8!important}
+.scene-strip{box-shadow:0 10px 28px #0002}
+@media(max-width:750px){.hub-return{padding:7px;font-size:11px}.topbar .brand span,.top .brand span{display:none}.topbar,.top{gap:6px}.top .full{display:none}}
