@@ -3,7 +3,7 @@
 const S=window.NPLStats,C=window.NPLStrategy,Studio=window.NPLStudioAPI,Bridge=window.NPLStudioBridge;
 const $=id=>document.getElementById(id);
 if(!S||!C||!Studio||!$('strategy-lab'))return;
-const names=['常规管理','App指导','混合干预'];
+const names=['常规干预','标准指导','综合干预'];
 const f=(n,d=3)=>Number.isFinite(n)?Number(n).toFixed(d):'—';
 const ptext=p=>p==null?'—':p<.0001?p.toExponential(2):p.toFixed(4);
 const safe=x=>String(x??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));

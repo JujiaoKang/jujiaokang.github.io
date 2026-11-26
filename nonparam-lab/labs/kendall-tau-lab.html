@@ -197,6 +197,7 @@
 .sorted-note{font-size:13px;color:#6c839d;margin-top:8px;line-height:1.5}
 @media(max-width:650px){.sorted-observations{padding:8px}.sorted-title{font-size:14px}.sorted-data-table{font-size:12px}.sorted-data-table th:first-child{width:86px}.sorted-note{font-size:12px}}
 </style>
+<link rel="stylesheet" href="../assets/site-shell.css">
 </head>
 <body>
 <header class="top"><div class="brand">非参数统计 <small>Kendall τ 秩相关检验</small></div><button class="full" id="fullscreen">全屏展示</button></header>
@@ -840,5 +841,6 @@ function attach(){for(const b of document.querySelectorAll('[data-tab]'))b.addEv
 attach();setupN(5);resetCountTeaching();resetPair();updateTie();showTab('pairs');
 })();
 </script>
+<script src="../assets/site-shell.js"></script>
 </body>
 </html>

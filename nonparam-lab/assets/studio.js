@@ -2,7 +2,7 @@
 (()=>{'use strict';
 const S=window.NPLStats, Bridge=window.NPLStudioBridge, el=id=>document.getElementById(id);
 if(!S||!Bridge||!el('simulation-studio'))return;
-const NAMES=['常规管理','App指导','混合干预'], COLORS=['#55c9ff','#b29aff','#ffbf83'];
+const NAMES=['常规干预','标准指导','综合干预'], COLORS=['#55c9ff','#b29aff','#ffbf83'];
 const start=Bridge.getCfg();
 const standard={allocation:'block',n:30,effect:'low',effectScale:.7,noise:'skew',dropout:'mar',dropoutRate:.15,seed:2026};
 let cfg={...standard,...start}, reference=null, currData=[], currKW=null, currStats=[], powerData=null, tab='points', lastAction='';
@@ -65,7 +65,7 @@ function drawTrajectory(){const t=[];
  let arr=currData.filter(z=>z.group===2&&z.week4!==null).slice(0,24);
  arr.forEach((p,i)=>{const opacity=.28+i%7*.04;const color=COLORS[2];t.push(`<path d="M${x[0]} ${y(p.baseline)} L${x[1]} ${y(p.week2)} L${x[2]} ${y(p.week4)}" fill="none" stroke="${color}" stroke-width="1.7" stroke-opacity="${opacity}"/>`);});
  ['基线','第2周','第4周'].forEach((lab,i)=>t.push(`<text x="${x[i]}" y="${h-24}" text-anchor="middle" class="sg-group">${lab}</text>`));
- t.push(`<text x="57" y="18" class="sg-axis-label">混合干预组 · 前24位完整病例的疼痛评分轨迹</text>`);
+ t.push(`<text x="57" y="18" class="sg-axis-label">综合干预组 · 前24位完整病例的疼痛评分轨迹</text>`);
  return t;
 }
 function draw(){let all=tab==='ecdf'?drawECDF():tab==='trajectory'?drawTrajectory():drawPoints();el('studio-svg').innerHTML=all.join('');

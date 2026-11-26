@@ -5,7 +5,7 @@ const $=id=>document.getElementById(id),safe=x=>String(x??'').replace(/[&<>"']/g
 if(!$('tutor-lab')||!K.length||!S||!St||!C)return;
 const STATE_KEY='npl-clinical-prototype-v1',API_KEY='npl-tutor-endpoint';
 const f=(n,d=3)=>Number.isFinite(n)?(Math.abs(n)<.0001&&n!==0?n.toExponential(2):n.toFixed(d)):'—';
-const groups=['常规管理','App指导','混合干预'];
+const groups=['常规干预','标准指导','综合干预'];
 let tab='diagnose',pending=false,record=null;
 const stamp=()=>new Date().toISOString();
 function fp(rows){let h=2166136261>>>0;const src=rows.map(r=>[r.id,r.group,r.baseline,r.week2,r.week4,r.delta,r.dropout,r.latentWeek4].join('/')).join(';');for(let i=0;i<src.length;i++){h^=src.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return h.toString(16).padStart(8,'0')+'-'+rows.length;}

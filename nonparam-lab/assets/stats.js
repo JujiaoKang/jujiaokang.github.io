@@ -16,7 +16,7 @@ function erf(x){let sign=x<0?-1:1,z=Math.abs(x),t=1/(1+.3275911*z);let y=1-(((((
 const cdf=z=>.5*(1+erf(z/Math.SQRT2));
 const twoSided=z=>clamp(2*(1-cdf(Math.abs(z))),0,1);
 const round=(x,p=3)=>Number.isFinite(x)?Number(x.toFixed(p)):null;
-function simulate(cfg){const n=Number(cfg.n)||30,seed=Number(cfg.seed)||2026,rand=rng(seed),groups=['常规管理','App指导','混合干预'];const effects={zero:[0,0,0],low:[0,.35,.7],medium:[0,.85,1.7]};const scale=Number(cfg.effectScale);const eff=Number.isFinite(scale)?[0,scale*.5,scale]:(effects[cfg.effect]||effects.low);
+function simulate(cfg){const n=Number(cfg.n)||30,seed=Number(cfg.seed)||2026,rand=rng(seed),groups=['常规干预','标准指导','综合干预'];const effects={zero:[0,0,0],low:[0,.35,.7],medium:[0,.85,1.7]};const scale=Number(cfg.effectScale);const eff=Number.isFinite(scale)?[0,scale*.5,scale]:(effects[cfg.effect]||effects.low);
  let all=[];for(let i=0;i<n*3;i++){const base=clamp(Math.round(6.1+1.55*normal(rand)),1,10),z=normal(rand),center=i%3;all.push({id:i+1,baseline:base,center,response:z,adherence:clamp(Math.round(70+15*normal(rand)+8*z),5,100)});}
  let alloc=[];if(cfg.allocation==='severity'){all.sort((a,b)=>a.baseline-b.baseline);alloc=all.map((_,i)=>Math.min(2,Math.floor(i/n)));}
  else if(cfg.allocation==='simple'){alloc=all.map(()=>Math.floor(rand()*3));}

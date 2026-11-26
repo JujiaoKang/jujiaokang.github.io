@@ -12,3 +12,6 @@
 @media(prefers-reduced-motion:reduce){.case-page *{transition:none!important;animation:none!important}}
 
 .case-check{display:flex;align-items:flex-start;gap:8px;font-size:12px;line-height:1.6;color:#a9c8e7;margin:10px 0}.case-check input{accent-color:#2ccdbb;margin-top:3px;flex:none}
+
+/* v0.9: study-stage headers without promotional copy */
+.case-hero h1{letter-spacing:-.025em}.case-hero-copy{padding:12px 0}.case-hero-copy>p,.case-workbench-intro p,.case-question small,.case-bottom>div>p{display:none}.case-question{justify-content:space-between}.case-question strong{line-height:1.45}

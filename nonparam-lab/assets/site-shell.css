@@ -1,0 +1,23 @@
+/* Shared navigation shell for every Nonparametric Statistics Lab page. */
+.nplab-header{position:sticky!important;top:0!important;z-index:1000!important;width:100%;min-height:72px!important;height:auto!important;padding:0!important;margin:0!important;display:block!important;color:#eaf4ff!important;background:rgba(7,15,32,.96)!important;border-bottom:1px solid rgba(126,165,207,.2)!important;box-shadow:0 8px 26px rgba(2,9,23,.16)!important;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.nplab-header *{box-sizing:border-box}
+.nplab-header-inner{max-width:1510px;min-height:72px;margin:0 auto;padding:9px clamp(14px,3vw,42px);display:flex;align-items:center;gap:20px}
+.nplab-brand{display:flex;align-items:center;gap:11px;flex:0 0 auto;color:#eef7ff!important;text-decoration:none!important;white-space:nowrap}
+.nplab-mark{width:39px;height:39px;border-radius:11px;display:grid;place-items:center;border:1px solid #69dce66b;background:linear-gradient(140deg,#1e4974,#12354d);color:#d8fbff;font:850 14px/1 Inter,system-ui,sans-serif;letter-spacing:-.08em;box-shadow:inset 0 1px 0 #ffffff24,0 0 18px #4dd5e51c}
+.nplab-mark span{color:#68e1e8;margin:0 1px}
+.nplab-brand-copy{display:flex;flex-direction:column;gap:3px;font-size:14px;font-weight:800;letter-spacing:.015em;line-height:1.2}
+.nplab-brand-copy small{font-size:8px;letter-spacing:.17em;color:#7898b9;font-weight:700}
+.nplab-nav{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-left:auto;min-width:0;overflow-x:auto;scrollbar-width:none}
+.nplab-nav::-webkit-scrollbar{display:none}
+.nplab-nav a{display:inline-flex;align-items:center;justify-content:center;min-height:37px;padding:8px 10px;border-radius:8px;color:#9eb2cc!important;text-decoration:none!important;font-size:12px;font-weight:700;white-space:nowrap;transition:background .18s,color .18s}
+.nplab-nav a:hover{background:#1a2e49;color:#fff!important}
+.nplab-nav a.active{background:#1c3552;color:#b7f2f2!important;box-shadow:inset 0 0 0 1px #5ac8d12b}
+.nplab-actions{flex:0 0 auto;display:flex;align-items:center;gap:8px}
+.nplab-fullscreen{border:1px solid #5b7998aa!important;background:#172b43!important;color:#d9edff!important;border-radius:8px!important;padding:7px 11px!important;min-height:35px!important;font-size:12px!important;font-weight:750!important;white-space:nowrap}
+.nplab-fullscreen:hover{background:#24415f!important;border-color:#7cc7e0!important}
+.nplab-page-footer{max-width:1510px;margin:24px auto 0;padding:15px clamp(14px,3vw,42px) 24px;color:#8196b1;font-size:11px;line-height:1.7;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.nplab-page-footer a{color:#6ccbd4;text-decoration:none}
+@media(max-width:1080px){.nplab-header-inner{gap:12px}.nplab-nav a{padding:7px 8px;font-size:11px}.nplab-brand-copy{font-size:13px}}
+@media(max-width:820px){.nplab-header-inner{min-height:68px;padding:8px 13px;gap:8px;flex-wrap:wrap}.nplab-brand{gap:8px}.nplab-mark{width:34px;height:34px;border-radius:9px}.nplab-brand-copy{font-size:12px}.nplab-brand-copy small{font-size:7px}.nplab-nav{order:3;width:100%;margin:0;justify-content:flex-start;border-top:1px solid #ffffff13;padding-top:5px;gap:3px}.nplab-nav a{min-height:31px;padding:6px 9px;font-size:11px}.nplab-actions{margin-left:auto}.nplab-fullscreen{font-size:11px!important;padding:6px 8px!important;min-height:31px!important}}
+@media(max-width:420px){.nplab-header-inner{padding-left:10px;padding-right:10px}.nplab-brand-copy{font-size:11px}.nplab-nav a{padding:6px 8px}.nplab-page-footer{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.nplab-header *{transition:none!important}}

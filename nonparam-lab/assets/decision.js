@@ -48,7 +48,7 @@ function capture(which){if(!study.plan){message('先完成第一步：记录研�
  if(which==='a'){study.a=snap;study.b=null;study.checks=null;study.reflection=null;}
  else{study.b=snap;study.checks=null;study.reflection=null;}
  log('保存分析方案 '+which.toUpperCase(),opts[key].label+' · P='+fmt(snap.p));safeSave();message('方案'+which.toUpperCase()+'已锁定，来自相同模拟队列。');}
-function audit(type){if(!study.a||!study.b){message('先保存两种分析方案，再核查数据。');return;}let d=rows(),groups=['常规管理','App指导','混合干预'],a=[0,1,2].map(g=>d.filter(r=>r.group===g));
+function audit(type){if(!study.a||!study.b){message('先保存两种分析方案，再核查数据。');return;}let d=rows(),groups=['常规干预','标准指导','综合干预'],a=[0,1,2].map(g=>d.filter(r=>r.group===g));
  let item='';if(type==='baseline'){item=a.map((x,i)=>`<tr><td>${groups[i]}</td><td>${x.length}</td><td>${fmt(x.reduce((s,z)=>s+z.baseline,0)/Math.max(1,x.length),2)}</td></tr>`).join('');$('decision-audit-view').innerHTML=`<table class="dd-table"><thead><tr><th>研究组</th><th>人数</th><th>基线评分均值</th></tr></thead><tbody>${item}</tbody></table>`;}
  else {item=a.map((x,i)=>{let n=x.filter(r=>r.dropout).length;return `<tr><td>${groups[i]}</td><td>${n}</td><td>${fmt(n/Math.max(1,x.length)*100,1)}%</td></tr>`;}).join('');$('decision-audit-view').innerHTML=`<table class="dd-table"><thead><tr><th>研究组</th><th>失访人数</th><th>失访比例</th></tr></thead><tbody>${item}</tbody></table>`;}
  if(!study.audits.includes(type))study.audits.push(type);
