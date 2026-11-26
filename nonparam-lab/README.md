@@ -1,9 +1,13 @@
-# 非参数统计数字实验室 v2.0
+# 非参数统计数字实验室 v2.1
 
 **Nonparametric Statistics Digital Lab**  
 GitHub Pages 静态网站部署包，适用于《非参数统计》课程教学、课堂演示与方法探索。
 
-## 本次整合内容
+## 网站导航
+
+顶部导航统一为：首页、综合实验、专题实验、进阶工作台、教师中心。Spearman、Kendall τ、Theil–Sen 及 Spearman 精确零分布均归入“专题实验”。
+
+## 实验内容
 
 - **综合实验**：临床疗效评价与统计推断，保留原有研究流程、交互任务、过程评分和实验记录。
 - **Spearman 秩相关**：非线性关系与秩次交互演示；精确零分布、全排列穷举与 Monte Carlo 模拟。
@@ -17,7 +21,7 @@ GitHub Pages 静态网站部署包，适用于《非参数统计》课程教学�
 
 ```text
 nonparam-lab/
-├── index.html                 # 全新实验室首页
+├── index.html                 # 实验室首页
 ├── clinical-lab.html          # 临床疗效评价综合实验
 ├── advanced-lab.html          # 进阶统计工作台
 ├── teacher.html               # 教师中心与实验记录

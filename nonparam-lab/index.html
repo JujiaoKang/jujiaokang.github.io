@@ -4,12 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#071126">
-<meta name="description" content="非参数统计数字实验室：Spearman、Kendall、Theil–Sen 与临床疗效评价综合实验。">
+<meta name="description" content="非参数统计数字实验室，包含Spearman秩相关、Kendall秩相关、Theil–Sen稳健回归及临床疗效评价综合实验。">
 <title>非参数统计数字实验室 | NP·LAB</title>
 <link rel="stylesheet" href="./assets/style.css">
 <link rel="stylesheet" href="./assets/site-shell.css">
 <link rel="stylesheet" href="./assets/home-v2.css">
-<script defer src="./assets/home.js"></script>
 </head>
 <body class="site home-v2">
 <header class="nplab-header">
@@ -18,9 +17,7 @@
   <nav class="nplab-nav" aria-label="实验室主导航">
    <a class="active" aria-current="page" href="./index.html">首页</a>
    <a href="./clinical-lab.html">综合实验</a>
-   <a href="./labs/spearman-rank-lab.html">Spearman</a>
-   <a href="./labs/kendall-tau-lab.html">Kendall τ</a>
-   <a href="./labs/theil-sen-lab.html">Theil–Sen</a>
+   <a href="#topic-experiments">专题实验</a>
    <a href="./advanced-lab.html">进阶工作台</a>
    <a href="./teacher.html">教师中心</a>
   </nav>
@@ -31,15 +28,14 @@
   <div class="home2-hero-copy">
    <div class="home2-kicker"><span class="home2-led"></span> NONPARAMETRIC STATISTICS / DIGITAL LAB</div>
    <h1>非参数统计<br><span>数字实验室</span></h1>
-   <p class="home2-lead">从秩次与一致性出发，理解变量关系；从两点斜率出发，获得稳健趋势估计；在真实研究情境中完成统计推断与方法选择。</p>
    <div class="home2-actions">
     <a class="home2-btn primary" href="./clinical-lab.html">进入综合实验 <span>↗</span></a>
-    <a class="home2-btn secondary" href="#method-library">浏览专题实验 <span>↓</span></a>
+    <a class="home2-btn secondary" href="#topic-experiments">专题实验 <span>↓</span></a>
    </div>
-   <div class="home2-meta"><span><i></i> 交互式统计计算</span><span><i></i> 动态图形演示</span><span><i></i> 方法比较与研究决策</span></div>
+   <div class="home2-meta"><span><i></i> 秩相关分析</span><span><i></i> 稳健趋势估计</span><span><i></i> 临床疗效评价</span></div>
   </div>
-  <div class="home2-visual" aria-label="秩相关与稳健回归的统计示意图">
-   <div class="visual-head"><span>METHOD MAP / 01—04</span><span class="visual-live"><i></i> INTERACTIVE LABS</span></div>
+  <div class="home2-visual" aria-label="统计方法示意图">
+   <div class="visual-head"><span>STATISTICAL METHODS / 01—03</span><span class="visual-live"><i></i> 专题实验</span></div>
    <div class="visual-grid">
     <div class="visual-method"><div class="visual-method-top"><span class="visual-number">01</span><span class="visual-method-name">SPEARMAN</span></div><svg viewBox="0 0 220 100" role="img" aria-label="单调非线性关系散点图"><path class="gridline" d="M12 20H210M12 50H210M12 80H210M45 10V88M105 10V88M165 10V88"/><path d="M17 80 C55 78 69 66 92 53 S145 33 205 14" class="trend-line cyan"/><g class="points cyan-points"><circle cx="25" cy="76" r="3.5"/><circle cx="51" cy="73" r="3.5"/><circle cx="75" cy="60" r="3.5"/><circle cx="101" cy="53" r="3.5"/><circle cx="126" cy="39" r="3.5"/><circle cx="156" cy="33" r="3.5"/><circle cx="184" cy="19" r="3.5"/></g></svg><div class="visual-caption">单调关系 · 秩次</div></div>
     <div class="visual-method"><div class="visual-method-top"><span class="visual-number">02</span><span class="visual-method-name">KENDALL τ</span></div><svg viewBox="0 0 220 100" role="img" aria-label="协同与不协同观测对示意图"><path class="gridline" d="M12 20H210M12 50H210M12 80H210M45 10V88M105 10V88M165 10V88"/><path d="M22 78L188 18M22 18L188 78" class="pair-line"/><g class="points violet-points"><circle cx="30" cy="72" r="4"/><circle cx="74" cy="56" r="4"/><circle cx="115" cy="45" r="4"/><circle cx="164" cy="28" r="4"/><circle cx="43" cy="24" r="4"/><circle cx="92" cy="41" r="4"/><circle cx="142" cy="63" r="4"/></g></svg><div class="visual-caption">协同对 · 不协同对</div></div>
@@ -49,63 +45,62 @@
   </div>
  </section>
 
- <section class="home2-stats" aria-label="实验室内容概览">
-  <div><strong>04</strong><span>方法模块</span></div>
-  <div><strong>05</strong><span>交互专题实验</span></div>
-  <div><strong>01</strong><span>综合研究任务</span></div>
-  <div><strong id="homeScore">— / 100</strong><span>综合实验过程得分</span></div>
+ <section class="home2-stats" aria-label="实验室内容">
+  <div><strong>03</strong><span>统计方法</span></div>
+  <div><strong>04</strong><span>专题实验</span></div>
+  <div><strong>01</strong><span>综合实验</span></div>
+  <div><strong>01</strong><span>教师中心</span></div>
  </section>
 
- <section class="home2-section" id="method-library">
-  <div class="section-heading"><div><span class="section-kicker">EXPERIMENT LIBRARY</span><h2>实验模块</h2><p>围绕研究问题组织实验，而不是按网页文件排列。</p></div><span class="section-index">01 / 04</span></div>
+ <section class="home2-section" id="integrated-experiment">
+  <div class="section-heading"><div><span class="section-kicker">INTEGRATED EXPERIMENT</span><h2>综合实验</h2></div><span class="section-index">01</span></div>
   <a class="module-card module-featured" href="./clinical-lab.html">
-   <div class="module-featured-left"><span class="module-code">INTEGRATED RESEARCH / 01</span><h3>临床疗效评价与统计推断</h3><p>以三组干预研究为情境，完成数据探索、组间比较、效应评估、敏感性分析与研究结论。</p><div class="module-tags"><span>研究设计</span><span>非参数检验</span><span>效应量</span><span>研究决策</span></div><span class="module-link">进入综合实验 <b>↗</b></span></div>
+   <div class="module-featured-left"><span class="module-code">CLINICAL STUDY / 01</span><h3>临床疗效评价与统计推断</h3><p>以三组干预研究为例，完成数据探索、组间比较、效应估计、缺失数据处理和敏感性分析。</p><div class="module-tags"><span>研究设计</span><span>非参数检验</span><span>Bootstrap</span><span>敏感性分析</span></div><span class="module-link">进入综合实验 <b>↗</b></span></div>
    <div class="module-featured-art" aria-hidden="true"><svg viewBox="0 0 430 210"><g class="art-grid"><path d="M12 34H418M12 78H418M12 122H418M12 166H418M65 12V190M145 12V190M225 12V190M305 12V190M385 12V190"/></g><path d="M18 158C72 158 87 148 121 126S185 60 226 66S297 109 337 75S388 41 414 28" class="art-curve a"/><path d="M18 170C69 157 104 171 139 139S206 142 245 111S331 55 414 54" class="art-curve b"/><path d="M18 184C81 179 118 180 155 156S239 140 276 149S353 121 414 107" class="art-curve c"/><g class="art-dots"><circle cx="121" cy="126" r="5"/><circle cx="226" cy="66" r="5"/><circle cx="337" cy="75" r="5"/><circle cx="245" cy="111" r="5"/><circle cx="276" cy="149" r="5"/></g></svg><div class="art-caption">CLINICAL OUTCOME / SIMULATED DATA</div></div>
   </a>
+ </section>
 
+ <section class="home2-section" id="topic-experiments">
+  <div class="section-heading"><div><span class="section-kicker">TOPIC EXPERIMENTS</span><h2>专题实验</h2></div><span class="section-index">02</span></div>
   <div class="module-grid">
    <article class="module-card method-card">
-    <div class="method-card-head"><span class="method-icon spearman-icon">ρ</span><span class="module-code">RANK CORRELATION / 02</span></div>
-    <h3>Spearman 秩相关</h3><p>用秩次刻画单调关系，观察非线性关联，并理解样本相关系数与显著性之间的区别。</p>
-    <div class="method-sub-links"><a href="./labs/spearman-rank-lab.html"><span>01</span> 非线性关系与秩次演示 <b>↗</b></a><a href="./labs/spearman-null-lab.html"><span>02</span> 精确零分布与 Monte Carlo <b>↗</b></a></div>
+    <div class="method-card-head"><span class="method-icon spearman-icon">ρ</span><span class="module-code">RANK CORRELATION / 01</span></div>
+    <h3>Spearman 秩相关</h3><p>计算 Spearman 秩相关系数，查看原始数据、秩次及相关检验结果。</p>
+    <div class="method-sub-links"><a href="./labs/spearman-rank-lab.html"><span>01</span> 秩次与单调关系 <b>↗</b></a><a href="./labs/spearman-null-lab.html"><span>02</span> 精确零分布与 Monte Carlo <b>↗</b></a></div>
    </article>
    <a class="module-card method-card" href="./labs/kendall-tau-lab.html">
-    <div class="method-card-head"><span class="method-icon kendall-icon">τ</span><span class="module-code">RANK CORRELATION / 03</span></div>
-    <h3>Kendall τ 秩相关</h3><p>从两两观测的协同与不协同出发，理解 τ 系数、并列值修正、精确零分布与 P 值。</p>
-    <div class="method-card-bottom"><span>两两比较 · 一致性 · 精确检验</span><b>↗</b></div>
+    <div class="method-card-head"><span class="method-icon kendall-icon">τ</span><span class="module-code">RANK CORRELATION / 02</span></div>
+    <h3>Kendall τ 秩相关</h3><p>计算 Kendall τ 系数，演示协同对、不协同对、并列值修正及显著性检验。</p>
+    <div class="method-card-bottom"><span>一致性 · τb · 精确检验</span><b>↗</b></div>
    </a>
    <a class="module-card method-card" href="./labs/theil-sen-lab.html">
-    <div class="method-card-head"><span class="method-icon theil-icon">β̃</span><span class="module-code">ROBUST REGRESSION / 04</span></div>
-    <h3>Theil–Sen 稳健回归</h3><p>计算全部有效两点斜率，以中位数估计趋势，并比较异常值对 OLS 与稳健估计的影响。</p>
+    <div class="method-card-head"><span class="method-icon theil-icon">β̃</span><span class="module-code">ROBUST REGRESSION / 03</span></div>
+    <h3>Theil–Sen 稳健回归</h3><p>计算有效两点斜率及其中位数，比较 Theil–Sen 与 OLS 的拟合结果。</p>
     <div class="method-card-bottom"><span>两点斜率 · 中位数 · 斜率检验</span><b>↗</b></div>
    </a>
+  </div>
+ </section>
+
+ <section class="home2-section" id="advanced-workspace">
+  <div class="section-heading"><div><span class="section-kicker">ANALYSIS WORKSPACE</span><h2>进阶工作台</h2></div><span class="section-index">03</span></div>
+  <div class="module-grid advanced-grid">
    <a class="module-card method-card advanced-card" href="./advanced-lab.html">
-    <div class="method-card-head"><span class="method-icon advanced-icon">∑</span><span class="module-code">ANALYSIS WORKSPACE / 05</span></div>
-    <h3>进阶统计工作台</h3><p>整合统计分析工具、研究策略、数据解释与课程知识库，支持进一步探索。</p>
-    <div class="method-card-bottom"><span>分析工具 · 研究策略 · 知识库</span><b>↗</b></div>
+    <div class="method-card-head"><span class="method-icon advanced-icon">∑</span><span class="module-code">STATISTICAL TOOLS</span></div>
+    <h3>统计分析与课程资料</h3><p>包含统计分析工具、研究策略、课程知识库及结果解释资料。</p>
+    <div class="method-card-bottom"><span>统计工具 · 研究策略 · 课程知识库</span><b>↗</b></div>
    </a>
   </div>
  </section>
 
- <section class="home2-section method-guide">
-  <div class="section-heading"><div><span class="section-kicker">METHOD SELECTION</span><h2>方法之间的联系</h2><p>它们回答的问题不同，不能简单互相替代。</p></div><span class="section-index">02 / 04</span></div>
-  <div class="guide-grid">
-   <div class="guide-item"><span class="guide-symbol">ρ</span><div><h3>Spearman</h3><p>关注变量是否存在单调关系，使用秩次而非原始数值。</p></div><span class="guide-type">秩相关</span></div>
-   <div class="guide-item"><span class="guide-symbol">τ</span><div><h3>Kendall</h3><p>关注随机抽取的一对观测是否保持一致排序。</p></div><span class="guide-type">秩相关</span></div>
-   <div class="guide-item"><span class="guide-symbol">β̃</span><div><h3>Theil–Sen</h3><p>关注趋势变化幅度，以两点斜率的中位数估计回归斜率。</p></div><span class="guide-type">稳健回归</span></div>
-   <div class="guide-item"><span class="guide-symbol">Σ</span><div><h3>综合实验</h3><p>将研究问题、数据结构、方法假设和统计结论连接起来。</p></div><span class="guide-type">综合应用</span></div>
-  </div>
- </section>
-
- <section class="home2-section home2-management">
-  <div class="section-heading"><div><span class="section-kicker">TEACHING & REVIEW</span><h2>教学与实验管理</h2><p>保存个人实验进度，支持教师导入和复核实验记录。</p></div><span class="section-index">03 / 04</span></div>
+ <section class="home2-section home2-management" id="teacher-center">
+  <div class="section-heading"><div><span class="section-kicker">TEACHING & REVIEW</span><h2>教师中心</h2></div><span class="section-index">04</span></div>
   <div class="management-grid">
-   <a href="./teacher.html" class="management-card"><span class="management-symbol">▤</span><div><h3>教师中心与实验记录</h3><p>查看本机实验记录，导入提交的 JSON 文件，批量复核并导出 CSV。</p></div><b>↗</b></a>
-   <a href="./evaluation.html" class="management-card"><span class="management-symbol">⌕</span><div><h3>知识检索评测</h3><p>查看课程知识库检索效果与固定问题测试。</p></div><b>↗</b></a>
+   <a href="./teacher.html" class="management-card"><span class="management-symbol">▤</span><div><h3>实验记录与成绩复核</h3><p>导入学生 JSON 实验记录，查看操作结果并导出 CSV。</p></div><b>↗</b></a>
+   <a href="./evaluation.html" class="management-card"><span class="management-symbol">⌕</span><div><h3>课程知识库评测</h3><p>查看知识库检索结果及固定问题测试记录。</p></div><b>↗</b></a>
   </div>
  </section>
- <section class="home2-note"><span class="note-mark">i</span><p>本实验室为静态教学网站。模拟数据仅用于统计方法演示，不代表真实临床结果；实验记录保存在本机浏览器，GitHub Pages 不会自动汇总全班成绩。</p></section>
+ <section class="home2-note"><span class="note-mark">i</span><p>实验数据为模拟数据，仅用于统计方法演示。实验记录保存在当前浏览器；教师可导入学生导出的 JSON 文件进行复核。</p></section>
 </main>
-<footer class="home2-footer"><div><span class="footer-mark">NP<span>·</span>LAB</span><span>非参数统计数字实验室</span></div><span>湖南师范大学 · 《非参数统计》课程教学资源</span></footer>
+<footer class="home2-footer"><div><span class="footer-mark">NP<span>·</span>LAB</span><span>非参数统计数字实验室</span></div><span>《非参数统计》课程教学资源</span></footer>
 </body>
 </html>
