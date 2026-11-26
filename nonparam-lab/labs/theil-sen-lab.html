@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#235fae">
+<title>Theil 非参数回归｜交互教学</title>
+<meta name="description" content="Theil–Sen 非参数回归教学实验：两点斜率、中位数、异常值、应用案例及 Kendall 斜率检验。">
+<style>
+:root{--blue:#286ac0;--deep:#1b477f;--mid:#3a7ccb;--teal:#138d86;--orange:#db8c31;--ink:#234264;--muted:#6c849e;--line:#dce7f3;--bg:#f5f8fd;--light:#eef5fd;--white:#fff;--shadow:0 8px 25px #356bab0d;--font:"Microsoft YaHei","微软雅黑","PingFang SC","Noto Sans CJK SC",sans-serif}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #d9a758;outline-offset:2px}button:hover:not(:disabled){filter:brightness(.97)}
+header{background:linear-gradient(120deg,#3981d2,#225eaf 68%,#194b91);color:#fff;min-height:64px;padding:12px clamp(15px,3vw,52px);display:flex;align-items:center;justify-content:space-between;gap:16px}.logo{font-weight:800;font-size:21px;letter-spacing:.02em}.logo span{font-weight:500;font-size:14px;opacity:.86;margin-left:14px}.fs{background:#ffffff12;border:1px solid #ffffff75;color:#fff;border-radius:7px;font-size:14px;padding:7px 14px}
+main{max-width:1570px;padding:22px clamp(12px,2.4vw,38px) 34px;margin:auto}.hero{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin:0 0 18px}.hero h1{font-size:clamp(27px,2.65vw,38px);color:#174078;margin:0 0 6px;font-weight:850}.hero p{font-size:16px;color:#6b849e;margin:0}.hero .sub{font-size:14px;color:#5b7da0;font-weight:750;white-space:nowrap}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border:1px solid var(--line);border-radius:12px;padding:5px;gap:5px;box-shadow:var(--shadow);margin-bottom:17px}.tab{border:0;background:transparent;padding:13px 8px;border-radius:8px;font-weight:800;color:#6a84a3;font-size:16px}.tab.active{background:#2869bd;color:#fff;box-shadow:0 3px 9px #2a6fc34d}
+.module[hidden]{display:none}.intro{font-size:15px;color:#728aa4;margin:0 0 13px;line-height:1.7}.module-title{margin:2px 0 14px;color:#194b84;font-size:22px}.layout{display:grid;grid-template-columns:minmax(440px,1.25fr) minmax(380px,.88fr);gap:16px;align-items:start}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);min-width:0;overflow:hidden}.panelhead{padding:16px 18px 10px;display:flex;justify-content:space-between;align-items:center;gap:10px}.ptitle{font-size:19px;font-weight:850;color:#204d86;display:flex;gap:10px;align-items:center}.ptitle::before{content:"";height:21px;width:5px;border-radius:3px;background:var(--blue)}.small{font-size:13px;color:#7b90a9}.panelbody{padding:10px 18px 17px}.chart{width:100%;height:auto;display:block;aspect-ratio:850/470}.split-note{background:#f2f7fd;border:1px solid #dfeaf6;padding:14px 18px;border-radius:9px;font-size:16px;line-height:1.7;color:#2c609b}.math{font-family:Cambria,Georgia,"Microsoft YaHei",serif;letter-spacing:.01em;font-weight:750}.formula{font-size:clamp(18px,2vw,25px);font-weight:850;color:#205eaa;text-align:center;line-height:1.6;margin:8px 0}.eyebrow{font-weight:750;color:#607e9e;font-size:14px}.metricgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.metric{background:#f1f6fd;border:1px solid #e0eaf6;border-radius:9px;padding:12px 13px;min-width:0}.metric.orange{background:#fff6eb;border-color:#f2dac0}.metric.teal{background:#f0faf8;border-color:#d0e9e3}.metric .cap{font-size:13px;color:#748ba3;font-weight:700;margin-bottom:3px}.metric .big{font-size:clamp(25px,2.8vw,37px);font-weight:850;color:#2162b4;font-variant-numeric:tabular-nums;white-space:nowrap}.metric.orange .big{color:#ce7d28}.metric.teal .big{color:#128c85}.metric .fine{font-size:12px;color:#8194aa;line-height:1.45;margin-top:5px}.rule{border:0;border-top:1px solid #e4edf6;margin:13px 0}.actions{display:flex;flex-wrap:wrap;gap:8px}.btn{border:1px solid #bfd2e9;background:#fff;border-radius:7px;color:#2e66aa;font-size:15px;padding:9px 13px;font-weight:750;min-height:41px}.btn.primary{background:#286abe;border-color:#286abe;color:#fff}.btn.teal{background:#128f85;border-color:#128f85;color:#fff}.btn.orange{background:#fff1e1;border-color:#efcda7;color:#ad651a}.btn.soft{background:#f2f7fd}.progressbox{margin:14px 0 7px}.progressline{display:flex;justify-content:space-between;font-size:14px;color:#627e9e;font-weight:750;margin-bottom:8px}.track{height:7px;background:#e6eef8;border-radius:12px;overflow:hidden}.track span{display:block;height:100%;width:0%;border-radius:12px;background:linear-gradient(90deg,#4788d1,#19a09a);transition:width .2s}
+.rawdetails{margin:8px 0 12px;border:1px solid #dce8f4;border-radius:8px;background:#f8fbff}.rawdetails summary{cursor:pointer;padding:10px 12px;font-size:14px;font-weight:800;color:#386b9e}.rawdetails .tablebox{border:0;border-top:1px solid #dce8f4;border-radius:0;max-height:280px}.scan-chart{width:100%;height:auto;aspect-ratio:850/330;display:block}.scan-body{padding:6px 18px 18px}.tablebox{overflow:auto;border:1px solid #dde8f5;border-radius:9px;max-height:350px}table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:14px;text-align:center}th{background:#e5effb;color:#2f639c;padding:11px 10px;font-weight:800;position:sticky;top:0;z-index:1}td{padding:9px 8px;border-top:1px solid #e6edf5}tr:nth-child(even) td{background:#f7faff}tr.hl td{background:#fff1da!important;color:#9b5e17;font-weight:850}tr[data-pair]{cursor:pointer}tr[data-pair]:hover td{background:#eaf3ff!important}.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:9px 0}.chip{font-size:14px;font-weight:760;color:#2769b7;background:#eaf3fe;border:1px solid #cde0f6;border-radius:7px;padding:6px 10px;min-width:38px;text-align:center}.chip.med{color:#fff;background:#d08a38;border-color:#d08a38}.result-line{background:#edf6ff;padding:15px 17px;border-radius:9px;border:1px solid #d9e9f9;font-size:17px;color:#245c99;line-height:1.8}.result-line b{color:#b96e28}
+.controls{display:flex;align-items:center;flex-wrap:wrap;gap:12px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);border-radius:10px;padding:13px 17px;margin-bottom:16px}.controls label{color:#587a9c;font-size:14px;font-weight:760}.controls select,.controls input[type=number]{background:#f3f8fe;border:1px solid #c9dcf1;border-radius:7px;padding:8px 12px;font-weight:750;color:#225b9f;min-height:40px;font-size:16px}.controls select{min-width:136px}.controls input[type=number]{width:112px}.controls .notes{font-size:13px;color:#8094aa;margin-left:auto}.sliderbox{padding:14px 17px;background:#f0f6fd;border:1px solid #dce9f6;border-radius:10px;margin:7px 0 15px}.sliderbox input[type=range]{width:100%;height:25px;accent-color:#c98128;cursor:pointer}.sliderhead{display:flex;align-items:center;justify-content:space-between;gap:12px}.slidervalue{font-size:32px;font-weight:850;color:#cf812e;font-variant-numeric:tabular-nums}.tagrow{display:flex;flex-wrap:wrap;gap:9px}.tag{display:inline-flex;align-items:center;gap:6px;color:#5b7896;font-size:13px;font-weight:700}.swatch{width:11px;height:11px;border-radius:2px;background:#286ac0}.swatch.teal{background:#13968a}.swatch.orange{background:#dc8b32}.swatch.gray{background:#a5b9cc}
+.case-data{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}.case-button{border:1px solid #cbdced;color:#547396;background:#f4f8fe;border-radius:7px;padding:8px 12px;font-weight:800}.case-button.active{background:#2669bc;border-color:#2669bc;color:#fff}.pager{display:flex;gap:7px;align-items:center;justify-content:flex-end;margin-top:9px;color:#69829f;font-size:13px}.scatter-msg{min-height:18px;font-size:13px;color:#718aa4;margin-top:4px}
+.tracegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}.tracegrid .metric{padding:10px}.test-area{background:#f6f9fe;border:1px solid #e2edf8;border-radius:9px;padding:14px 15px;line-height:1.65}.test-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.test-controls label{color:#597895;font-size:14px;font-weight:800}.test-controls input{border:1px solid #d2e1f2;border-radius:6px;padding:7px 9px;color:#18569e;width:110px;font-weight:800}.test-controls select{border:1px solid #d2e1f2;border-radius:6px;padding:7px 9px;color:#18569e;background:#fff}.test-sentence{font-size:16px;color:#365c80;line-height:1.65}.p-result{font-size:clamp(27px,3vw,43px);font-weight:850;color:#bf761f;line-height:1.3;font-variant-numeric:tabular-nums}.footer-note{font-size:12px;color:#859bb3;margin-top:18px;line-height:1.75}.divider{margin:16px 0;border:0;border-top:1px solid #e1ebf5}#pairSlopes{min-height:40px}.teacher-tip{padding:11px 14px;background:#fff8ed;border-left:4px solid #dfa057;color:#815f34;border-radius:4px;font-size:14px;line-height:1.7}.page-foot{margin-top:18px;text-align:center;font-size:12px;color:#8195ad}
+@media(max-width:1050px){.layout{grid-template-columns:1fr}.chart{max-width:960px;margin:0 auto}.panelbody{padding:10px 16px 16px}}
+@media(max-width:650px){header{min-height:55px;padding:10px 12px}.logo{font-size:16px}.logo span{display:none}.fs{font-size:12px;padding:6px}.hero{display:block}.hero h1{font-size:27px}.hero p{font-size:13px}.hero .sub{display:none}.tabs{grid-template-columns:repeat(2,1fr)}.tab{font-size:14px;padding:11px 5px}main{padding:14px 10px 25px}.panelhead{padding:13px 12px 6px}.ptitle{font-size:17px}.panelbody{padding:9px 11px 14px}.module-title{font-size:20px}.intro{font-size:13px}.metric .big{font-size:25px}.metric .cap{font-size:11px}.controls{padding:11px;gap:8px}.controls .notes{width:100%;margin-left:0}.controls select{min-width:90px}.tracegrid{gap:5px}.tracegrid .metric{padding:8px 6px}.btn{font-size:13px;padding:8px 10px}.chart{aspect-ratio:850/520}.formula{font-size:19px}.tablebox{max-height:290px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header><div class="logo">非参数统计 <span>第六章 · 相关与回归</span></div><button id="fullScreen" class="fs" type="button">全屏展示</button></header>
+<main>
+ <section class="hero"><div><h1>Theil 非参数回归</h1><p>两点斜率 · 中位数估计 · 稳健性 · Kendall 斜率检验</p></div><div class="sub">Theil–Sen 估计</div></section>
+ <nav class="tabs" aria-label="教学模块"><button class="tab active" type="button" data-tab="pairs">01 两点斜率</button><button class="tab" type="button" data-tab="outlier">02 异常值</button><button class="tab" type="button" data-tab="cases">03 应用案例</button><button class="tab" type="button" data-tab="test">04 斜率检验</button></nav>
+ <section class="module" id="module-pairs">
+  <p class="intro">对每一对观测计算斜率，再对所有两点斜率取中位数，得到 Theil–Sen 斜率估计。</p>
+  <div class="layout">
+   <article class="panel"><div class="panelhead"><div class="ptitle">两点斜率的计算</div><div class="small" id="pairCountLabel">0 / 10 对</div></div>
+    <div class="panelbody"><svg class="chart" id="pairPlot" viewBox="0 0 850 470" role="img" aria-label="示例数据散点图及选中观测对"></svg><div class="tagrow"><span class="tag"><i class="swatch"></i>原始观测</span><span class="tag"><i class="swatch orange"></i>当前两点</span><span class="tag"><i class="swatch teal"></i>Theil–Sen 回归线</span></div>
+    <div class="progressbox"><div class="progressline"><span id="pairState">等待计算</span><strong id="pairFraction">0 / 10</strong></div><div class="track"><span id="pairBar"></span></div></div>
+    <div class="actions"><button type="button" class="btn" id="nextPair">下一对</button><button type="button" class="btn primary" id="autoPair">▶ 自动演示</button><button type="button" class="btn" id="finishPairs">完成全部</button><button type="button" class="btn soft" id="resetPairs">重置</button></div>
+    </div>
+   </article>
+   <article class="panel"><div class="panelhead"><div class="ptitle">斜率与回归方程</div><div class="small">例题：n = 5</div></div><div class="panelbody">
+    <div class="split-note">X = (1, 2, 3, 4, 5)<br>Y = (2, 4, 6, 8, 20)</div>
+    <div class="formula">b<sub>ij</sub> = (Y<sub>j</sub> − Y<sub>i</sub>) / (X<sub>j</sub> − X<sub>i</sub>)</div>
+    <div class="metricgrid"><div class="metric orange"><div class="cap">当前观测对</div><div class="big" id="pairCurrent">—</div><div class="fine" id="pairDeltas">ΔX = —，ΔY = —</div></div><div class="metric"><div class="cap">当前两点斜率</div><div class="big" id="pairCurrentSlope">—</div><div class="fine" id="pairCurrentFormula">选择任意两点</div></div></div>
+    <hr class="rule"><div class="eyebrow">已经得到的斜率</div><div class="chips" id="pairSlopes"><span class="small">开始计算后逐项显示</span></div>
+    <div class="metricgrid"><div class="metric teal"><div class="cap">斜率中位数 β̃</div><div class="big" id="pairBeta">—</div></div><div class="metric"><div class="cap">截距中位数 α̃</div><div class="big" id="pairAlpha">—</div></div></div>
+    <div class="result-line" id="pairEquation" style="margin-top:12px">完成全部10对斜率后，计算中位数与回归方程。</div><div class="chips" id="pairResiduals" aria-label="截距计算的逐个候选值"></div>
+    <hr class="rule"><div class="eyebrow" style="margin-bottom:6px">斜率计算记录</div><div class="tablebox"><table><thead><tr><th>观测对</th><th>ΔX</th><th>ΔY</th><th>b<sub>ij</sub></th></tr></thead><tbody id="pairTable"></tbody></table></div>
+   </div></article>
+  </div>
+ </section>
+ <section class="module" id="module-outlier" hidden>
+  <p class="intro">保持前四个点不变，调整第5个观测的 Y 值，比较最小二乘（OLS）与 Theil–Sen 回归线。</p>
+  <div class="layout">
+   <article class="panel"><div class="panelhead"><div class="ptitle">异常值对回归线的影响</div><div class="small">可直接拖动橙色点</div></div><div class="panelbody">
+    <svg class="chart" id="outlierPlot" viewBox="0 0 850 470" role="img" aria-label="可拖动的第5个观测和两条回归线"></svg>
+    <div class="tagrow"><span class="tag"><i class="swatch"></i>前四个观测</span><span class="tag"><i class="swatch orange"></i>第5个观测</span><span class="tag"><i class="swatch teal"></i>Theil–Sen</span><span class="tag"><i class="swatch orange"></i>OLS</span></div>
+    <div class="sliderbox"><div class="sliderhead"><label for="outlierY" class="eyebrow">第5个观测的 Y 值</label><output class="slidervalue" id="outlierOutput">20</output></div><input id="outlierY" type="range" min="8" max="35" value="20" step="0.5"><div class="actions"><button class="btn" id="normalPoint">Y₅ = 10</button><button class="btn orange" id="oddPoint">Y₅ = 20</button><button class="btn" id="extremePoint">Y₅ = 35</button><button class="btn soft" id="repeatX">X₅ = 4（重复X）</button></div></div>
+   </div></article>
+   <article class="panel"><div class="panelhead"><div class="ptitle">OLS 与 Theil–Sen</div></div><div class="panelbody">
+    <div class="metricgrid"><div class="metric teal"><div class="cap">Theil–Sen 斜率 β̃</div><div class="big" id="outBeta">2.000</div><div class="fine" id="outEq">ŷ = 2X</div></div><div class="metric orange"><div class="cap">OLS 斜率 β̂</div><div class="big" id="outOlsBeta">4.000</div><div class="fine" id="outOlsEq">ŷ = −4 + 4X</div></div></div>
+    <hr class="rule"><div class="eyebrow" id="outNLabel">10个两点斜率（已排序）</div><div id="outSlopes" class="chips"></div>
+    <div class="result-line" id="outMedianInfo" style="margin-top:10px"></div>
+    <hr class="rule"><div class="teacher-tip">OLS 最小化残差平方和；Theil–Sen 用全部可用两点斜率的中位数估计斜率。少数极端观测对两者的影响可能不同。</div>
+   </div></article>
+  </div>
+ </section>
+ <section class="module" id="module-cases" hidden>
+  <p class="intro">采用课件中的原始数据，计算全部两点斜率、回归截距，并比较 Theil–Sen 与 OLS。</p>
+  <div class="controls"><label>分析数据</label><button type="button" class="case-button active" data-case="students">17人 · 期中与期末成绩</button><button type="button" class="case-button" data-case="countries">40国 · CPI–GINI</button><span class="notes" id="caseTotals">17个观测 · 136个两点斜率</span></div>
+  <div class="layout">
+   <article class="panel"><div class="panelhead"><div class="ptitle" id="caseChartTitle">17人期中与期末成绩</div><div class="small">点击散点图中的两个点查看斜率</div></div><div class="panelbody"><svg class="chart" id="casePlot" viewBox="0 0 850 470" role="img" aria-label="应用案例散点图与回归拟合"></svg><div class="tagrow"><span class="tag"><i class="swatch"></i>观测数据</span><span class="tag"><i class="swatch teal"></i>Theil–Sen</span><span class="tag"><i class="swatch orange"></i>OLS</span></div><div class="scatter-msg" id="caseSelectInfo">点击两个散点可计算它们之间的斜率。</div><details class="rawdetails"><summary id="rawDetailsTitle">查看原始数据</summary><div class="tablebox"><table><thead><tr><th>序号</th><th id="rawXtitle">X</th><th id="rawYtitle">Y</th></tr></thead><tbody id="rawDataBody"></tbody></table></div></details>
+    <div class="metricgrid"><div class="metric teal"><div class="cap">Theil–Sen 斜率 β̃</div><div class="big" id="caseBeta">—</div><div class="fine" id="caseEq">—</div></div><div class="metric orange"><div class="cap">OLS 斜率 β̂</div><div class="big" id="caseOlsBeta">—</div><div class="fine" id="caseOlsEq">—</div></div></div>
+   </div></article>
+   <article class="panel"><div class="panelhead"><div class="ptitle">全部两点斜率</div><div class="small" id="caseNLabel">136种</div></div><div class="panelbody">
+    <div class="split-note" id="caseMedianText">斜率中位数由全部两点斜率确定。</div><div class="metricgrid" style="margin-top:12px"><div class="metric"><div class="cap">斜率中位数 β̃</div><div class="big" id="caseMed">—</div></div><div class="metric"><div class="cap">截距中位数 α̃</div><div class="big" id="caseIntercept">—</div></div></div>
+    <hr class="rule"><div class="eyebrow">观测对与两点斜率（点击一行可在图中查看）</div><div class="tablebox" style="max-height:400px"><table><thead><tr><th>观测对</th><th>ΔX</th><th>ΔY</th><th>斜率</th></tr></thead><tbody id="casePairTable"></tbody></table></div>
+    <div class="pager"><button class="btn" id="casePrev">上一页</button><span id="casePage">1 / 12</span><button class="btn" id="caseNext">下一页</button></div>
+    <div class="actions" style="margin-top:12px"><button class="btn" id="caseSort">按斜率从小到大排列</button><button class="btn soft" id="caseResetSelect">取消选中</button></div>
+   </div></article>
+  </div>
+ </section>
+ <section class="module" id="module-test" hidden>
+  <p class="intro">检验假设斜率 β₀。将线性趋势 β₀X 从 Y 中扣除，再检验 X 与剩余部分 D(β₀) 的 Kendall 关联。</p>
+  <div class="controls"><label for="testData">数据</label><select id="testData"><option value="students">17人期中与期末成绩</option><option value="countries" selected>40国CPI–GINI</option><option value="five">5个观测示例</option></select><label for="beta0">假设斜率 β₀</label><input id="beta0" type="number" step="0.1" value="-0.7"><label for="alternative">备择假设</label><select id="alternative"><option value="two">β ≠ β₀（双侧）</option><option value="less" selected>β &lt; β₀（左侧）</option><option value="greater">β &gt; β₀（右侧）</option></select></div>
+  <div class="layout">
+   <article class="panel"><div class="panelhead"><div class="ptitle">扣除假设线性趋势</div></div><div class="panelbody"><div class="formula">D<sub>i</sub>(β₀) = Y<sub>i</sub> − β₀ X<sub>i</sub></div><svg class="chart" id="testPlot" viewBox="0 0 850 470" role="img" aria-label="解释变量和调整后的响应变量散点图"></svg><div class="eyebrow" id="testObsSummary">40对观测</div></div></article>
+   <article class="panel"><div class="panelhead"><div class="ptitle">Kendall 斜率检验</div><div class="small" id="testMethod">大样本正态近似</div></div><div class="panelbody">
+    <div class="test-area"><div class="eyebrow">零假设</div><div class="formula" id="testHyp">H₀：β = −0.7</div><p class="test-sentence" id="testAlternative" style="margin:4px 0">H₁：β &lt; −0.7</p><div class="split-note" id="testExplanation" style="background:#fff;font-size:14px">在原假设成立且误差与X独立、同分布等条件下，D(β₀)与X应没有系统性秩相关。</div></div>
+    <div class="tracegrid"><div class="metric"><div class="cap">协同对 C</div><div class="big" id="testC">—</div></div><div class="metric"><div class="cap">不协同对 D</div><div class="big" id="testD">—</div></div><div class="metric"><div class="cap">Kendall τᵦ</div><div class="big" id="testTau">—</div></div></div>
+    <hr class="rule"><div class="metricgrid"><div class="metric"><div class="cap">检验统计量 z / S</div><div class="big" id="testZ">—</div><div class="fine" id="testS">—</div></div><div class="metric orange"><div class="cap">P 值</div><div class="p-result" id="testP">—</div><div class="fine" id="testPType">—</div></div></div>
+    <div class="result-line" id="testConclusion" style="margin-top:12px">—</div>
+    <hr class="rule"><div class="eyebrow">斜率检验与两点斜率的关系</div><div class="split-note" style="background:#fff;margin-top:9px"><span class="math">D<sub>j</sub>(β₀) − D<sub>i</sub>(β₀) = (X<sub>j</sub> − X<sub>i</sub>)(b<sub>ij</sub> − β₀)</span></div>
+   </div></article>
+  </div>
+  <article class="panel" style="margin-top:16px"><div class="panelhead"><div class="ptitle">斜率置信集：检验反演</div><span class="small">补充演示</span></div><div class="scan-body">
+   <p class="intro">逐一检验候选斜率 β₀，保留双侧检验中 P(β₀) &gt; 0.05 的候选值。</p>
+   <div class="actions"><button class="btn primary" id="scanBtn">绘制 P(β₀) 曲线</button><button class="btn soft" id="scanHide">收起</button></div>
+   <div id="scanArea" hidden><svg id="scanPlot" class="scan-chart" viewBox="0 0 850 330" role="img" aria-label="不同假设斜率对应的双侧检验P值"></svg><div class="result-line" id="scanExplain"></div><p class="small" style="margin-top:9px">显示的是候选斜率网格扫描结果，区间端点为近似位置；正式报告应使用相应统计软件计算并核查假设与并列值处理。</p></div>
+  </div></article>
+ </section>
+ <p class="footer-note">计算口径：Theil–Sen 斜率取所有 X<sub>i</sub> ≠ X<sub>j</sub> 的两点斜率的样本中位数；截距取 median(Y<sub>i</sub> − β̃X<sub>i</sub>)。OLS 使用最小残差平方和。斜率检验以误差独立同分布且与 X 独立等条件为基础；大样本 P 值为正态近似，小样本示例使用条件排列检验。回归关联不能直接解释为因果效应。</p>
+ <div class="page-foot">《非参数统计》 · 第六章 · Theil 非参数回归</div>
+</main>
+<script>
+(()=>{'use strict';
+ const $=id=>document.getElementById(id), SVGNS='http://www.w3.org/2000/svg';
+ const data={
+  five:{label:'5个观测示例',xlabel:'X',ylabel:'Y',x:[1,2,3,4,5],y:[2,4,6,8,20]},
+  students:{label:'17人期中与期末成绩',xlabel:'期中成绩 X',ylabel:'期末成绩 Y',x:[79,83,60,80,73,69,57,74,81,78,76,77,82,75,72,71,54],y:[87,96,61,83,68,55,71,80,66,79,76,78,90,70,63,74,73]},
+  countries:{label:'40国CPI–GINI',xlabel:'CPI (X)',ylabel:'GINI (Y)',x:[9.7,9.5,9.3,9,8.7,8.6,8.5,7.8,7.7,7.5,7.3,7.1,6.9,6.3,6,5.7,5.6,5.2,5.1,4.9,4.2,4,3.9,3.8,3.7,3.2,3.1,3,2.9,2.7,2.6,2.5,2.4,2.2,2.1,2,1.7,1.6,4.8,4.5],y:[25.6,24.7,25,31.5,36.8,35.2,25.8,31,45,57.1,30,28.7,35.9,32.7,28.4,70,37,27.3,44.8,24.4,35.4,31.6,40.7,29,34.4,51.1,41.3,48.5,44.7,39.9,41,49.5,36.1,42,37.4,36,38.1,50.6,34,35.8]}
+ };
+ const state={tab:'pairs',pairIndex:0,pairTimer:null,outY:20,repeatX:false,caseKey:'students',casePage:0,caseSort:false,caseSelected:[],testKey:'countries'};
+ const fmt=(n,d=3)=>!Number.isFinite(n)?'—':(Math.abs(n)<.0000001?'0':Number(n.toFixed(d)).toString());
+ const fx=(n,d=3)=>Number.isFinite(n)?n.toFixed(d):'—';
+ const signed=(n,d=3)=>!Number.isFinite(n)?'—':n>1e-9?'+'+fx(n,d):fx(n,d);
+ const median=a=>{if(!a.length)return NaN;const b=a.slice().sort((u,v)=>u-v),m=Math.floor(b.length/2);return b.length%2?b[m]:(b[m-1]+b[m])/2;};
+ const pairs=d=>{const arr=[];for(let i=0;i<d.x.length;i++)for(let j=i+1;j<d.x.length;j++){const dx=d.x[j]-d.x[i],dy=d.y[j]-d.y[i];arr.push({i,j,dx,dy,slope:dx===0?NaN:dy/dx});}return arr;};
+ const theil=d=>{const s=pairs(d).filter(p=>Number.isFinite(p.slope)),b=median(s.map(p=>p.slope));return {a:median(d.y.map((y,i)=>y-b*d.x[i])),b,ps:s};};
+ function ols(d){const n=d.x.length,mx=d.x.reduce((a,b)=>a+b,0)/n,my=d.y.reduce((a,b)=>a+b,0)/n;let cov=0,vx=0;for(let i=0;i<n;i++){cov+=(d.x[i]-mx)*(d.y[i]-my);vx+=(d.x[i]-mx)**2;}const b=cov/vx;return {a:my-b*mx,b};}
+ const equation=(a,b,dec=3)=>{const aa=Math.abs(a)<1e-10?'':fmt(a,dec),ss=b<0?'-':'+';return `ŷ = ${aa?aa+' ':''}${aa?ss+' ':b<0?'−':''}${fmt(Math.abs(b),dec)}X`.replace(/- /g,'− ');};
+ const mk=(tag,attrs={},text)=>{const e=document.createElementNS(SVGNS,tag);Object.keys(attrs).forEach(k=>e.setAttribute(k,attrs[k]));if(text!==undefined)e.textContent=text;return e;};
+ function makePlot(id,d,options={}){
+  const svg=$(id);svg.replaceChildren();const [W,H]=[850,470],L=72,R=25,T=32,B=65;const extra=options.fixedY||[];
+  const xrange=Math.max(...d.x)-Math.min(...d.x)||1,yrange=Math.max(...d.y,...extra)-Math.min(...d.y,...extra)||1;
+  let xmin=Math.min(...d.x)-xrange*.10,xmax=Math.max(...d.x)+xrange*.10,ymin=Math.min(...d.y,...extra)-yrange*.14,ymax=Math.max(...d.y,...extra)+yrange*.16;
+  if(options.boundsY){ymin=options.boundsY[0];ymax=options.boundsY[1];}
+  const px=x=>L+(x-xmin)/(xmax-xmin)*(W-L-R),py=y=>T+(ymax-y)/(ymax-ymin)*(H-T-B);
+  const add=(tag,attrs,text)=>{const z=mk(tag,attrs,text);svg.appendChild(z);return z;};
+  for(let k=0;k<=5;k++){
+   const gy=T+(H-T-B)*k/5,val=ymax-(ymax-ymin)*k/5;
+   add('line',{x1:L,x2:W-R,y1:gy,y2:gy,stroke:k===5?'#9bb3c9':'#e7eff8','stroke-width':k===5?1.4:1});
+   add('text',{x:L-12,y:gy+5,fill:'#7691a9','text-anchor':'end','font-size':13},fmt(val,Math.abs(ymax-ymin)>100?0:1));
+   const gx=L+(W-L-R)*k/5,xv=xmin+(xmax-xmin)*k/5;
+   add('text',{x:gx,y:H-B+25,fill:'#7691a9','text-anchor':'middle','font-size':13},fmt(xv,Math.abs(xmax-xmin)>100?0:1));
+  }
+  add('line',{x1:L,y1:T,x2:L,y2:H-B,stroke:'#90a8c0','stroke-width':1.5});
+  add('text',{x:(L+W-R)/2,y:H-13,fill:'#5c7b9e','text-anchor':'middle','font-size':16,'font-weight':700},options.xlabel||d.xlabel||'X');
+  add('text',{x:19,y:(T+H-B)/2,fill:'#5c7b9e','text-anchor':'middle','font-size':16,'font-weight':700,transform:`rotate(-90,19,${(T+H-B)/2})`},options.ylabel||d.ylabel||'Y');
+  if(options.lines)for(const line of options.lines){const y1=line.a+line.b*xmin,y2=line.a+line.b*xmax;add('line',{x1:px(xmin),y1:py(y1),x2:px(xmax),y2:py(y2),stroke:line.color,'stroke-width':line.width||3.2,'stroke-linecap':'round','stroke-dasharray':line.dash||''});}
+  if(options.pair){const {i,j}=options.pair;add('line',{x1:px(d.x[i]),y1:py(d.y[i]),x2:px(d.x[j]),y2:py(d.y[j]),stroke:'#df9038','stroke-width':4,'stroke-linecap':'round'});}
+  d.x.forEach((x,i)=>{const selected=options.pair&&(i===options.pair.i||i===options.pair.j),hot=(options.highIndex===i)||selected;
+   const c=add('circle',{cx:px(x),cy:py(d.y[i]),r:hot?8.6:6,fill:hot?'#e5a04e':'#276fc1',stroke:'#fff','stroke-width':2.1,'data-index':i});
+   c.appendChild(mk('title',{},`观测${i+1}：X=${fmt(x,2)}, Y=${fmt(d.y[i],2)}`));
+   if(options.clickPoint){c.style.cursor='pointer';c.addEventListener('click',()=>options.clickPoint(i));}
+   if(options.dragPoint&&i===options.highIndex){
+    c.style.cursor='ns-resize';c.style.touchAction='none';c.setAttribute('r','11');
+    c.addEventListener('pointerdown',ev=>{
+      ev.preventDefault();
+      const move=event=>{
+        event.preventDefault();
+        const rect=svg.getBoundingClientRect();
+        const ySvg=(event.clientY-rect.top)*H/rect.height;
+        options.dragPoint(ymax-(ySvg-T)/(H-T-B)*(ymax-ymin),false);
+      };
+      const stop=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',stop);window.removeEventListener('pointercancel',stop);};
+      window.addEventListener('pointermove',move,{passive:false});
+      window.addEventListener('pointerup',stop);
+      window.addEventListener('pointercancel',stop);
+    });
+   }
+  });
+  return {px,py};
+ }
+ // NAV
+ function activate(tab){if(state.pairTimer){clearInterval(state.pairTimer);state.pairTimer=null;$('autoPair').textContent='▶ 自动演示';}state.tab=tab;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));document.querySelectorAll('.module').forEach(m=>m.hidden=m.id!==`module-${tab}`);({pairs:renderPairs,outlier:renderOutlier,cases:renderCase,test:renderTest})[tab]();}
+ document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>activate(b.dataset.tab)));
+ $('fullScreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch(e){$('fullScreen').textContent='可按 F11 全屏';}});
+ // PAIRS
+ const fivePairs=pairs(data.five);
+ function renderPairs(){const seen=fivePairs.slice(0,state.pairIndex),last=seen.length?seen.at(-1):null;
+  makePlot('pairPlot',data.five,{pair:last,highIndex:4,lines:seen.length===10?[{...theil(data.five),color:'#13958b'}]:[]});
+  $('pairCountLabel').textContent=`${seen.length} / 10 对`;$('pairFraction').textContent=`${seen.length} / 10`;$('pairBar').style.width=seen.length*10+'%';
+  $('pairState').textContent=seen.length===10?'全部10对已计算':seen.length?`第 ${seen.length} 对计算完成`:'等待计算';
+  $('pairCurrent').textContent=last?`(${last.i+1}, ${last.j+1})`:'—';$('pairCurrentSlope').textContent=last?fmt(last.slope):'—';
+  $('pairDeltas').textContent=last?`ΔX=${fmt(last.dx)}，ΔY=${fmt(last.dy)}`:'ΔX = —，ΔY = —';
+  $('pairCurrentFormula').textContent=last?`(${fmt(data.five.y[last.j])} − ${fmt(data.five.y[last.i])}) / (${fmt(data.five.x[last.j])} − ${fmt(data.five.x[last.i])})`:'选择任意两点';
+  const chipbox=$('pairSlopes');chipbox.replaceChildren();if(!seen.length){chipbox.textContent='开始计算后逐项显示';}else{const sorted=seen.map(p=>p.slope).sort((a,b)=>a-b);const med=seen.length===10?median(sorted):NaN;sorted.forEach((v,i)=>{const span=document.createElement('span');span.className='chip'+(seen.length===10&&Math.abs(v-med)<1e-9?' med':'');span.textContent=fmt(v,3);chipbox.append(span);});}
+  const done=seen.length===10,fit=done?theil(data.five):null;
+  $('pairBeta').textContent=done?fx(fit.b):'—';$('pairAlpha').textContent=done?fx(fit.a):'—';
+  $('pairEquation').innerHTML=done?`β̃ = median(b<sub>ij</sub>) = <b>${fmt(fit.b)}</b><br>α̃ = median(Y<sub>i</sub> − β̃X<sub>i</sub>) = <b>${fmt(fit.a)}</b><br><b>${equation(fit.a,fit.b)}</b>`:'完成全部10对斜率后，计算中位数与回归方程。';
+  $('pairResiduals').replaceChildren();if(done){const t=document.createElement('span');t.className='eyebrow';t.textContent='截距候选值：';$('pairResiduals').append(t);data.five.y.forEach((y,i)=>{const t=document.createElement('span');t.className='chip';t.textContent=fmt(y-fit.b*data.five.x[i]);$('pairResiduals').append(t);});}
+  $('pairTable').innerHTML=seen.map(p=>`<tr><td>(${p.i+1},${p.j+1})</td><td>${fmt(p.dx)}</td><td>${fmt(p.dy)}</td><td>${fmt(p.slope)}</td></tr>`).join('');$('nextPair').disabled=done;$('finishPairs').disabled=done;
+  if(done&&state.pairTimer){clearInterval(state.pairTimer);state.pairTimer=null;$('autoPair').textContent='▶ 自动演示';}
+ }
+ $('nextPair').addEventListener('click',()=>{if(state.pairIndex<10){state.pairIndex++;renderPairs();}});
+ $('autoPair').addEventListener('click',()=>{if(state.pairTimer){clearInterval(state.pairTimer);state.pairTimer=null;$('autoPair').textContent='▶ 自动演示';return;}
+  if(state.pairIndex===10)state.pairIndex=0;$('autoPair').textContent='Ⅱ 暂停';state.pairTimer=setInterval(()=>{state.pairIndex=Math.min(10,state.pairIndex+1);renderPairs();},650);renderPairs();});
+ $('finishPairs').addEventListener('click',()=>{state.pairIndex=10;renderPairs();});
+ $('resetPairs').addEventListener('click',()=>{if(state.pairTimer)clearInterval(state.pairTimer);state.pairTimer=null;state.pairIndex=0;$('autoPair').textContent='▶ 自动演示';renderPairs();});
+ // OUTLIER
+ function outData(){return {xlabel:'X',ylabel:'Y',x:[1,2,3,4,state.repeatX?4:5],y:[2,4,6,8,state.outY]};}
+ function setOutlier(y){state.outY=Math.round(Math.min(35,Math.max(8,y))*2)/2;$('outlierY').value=state.outY;renderOutlier();}
+ function renderOutlier(){const d=outData(),fit=theil(d),least=ols(d);$('outlierOutput').textContent=fmt(state.outY,1);$('repeatX').textContent=state.repeatX?'X₅ = 5（恢复X）':'X₅ = 4（重复X）';
+  makePlot('outlierPlot',d,{fixedY:[8,35],boundsY:[0,38],highIndex:4,lines:[{...fit,color:'#13968a',width:4},{...least,color:'#df913c',width:3.6}],dragPoint:(y)=>{setOutlier(y);}});
+  $('outBeta').textContent=fx(fit.b);$('outOlsBeta').textContent=fx(least.b);$('outEq').textContent=equation(fit.a,fit.b);$('outOlsEq').textContent=equation(least.a,least.b);
+  $('outSlopes').replaceChildren();const a=fit.ps.map(v=>v.slope).sort((a,b)=>a-b),mid=median(a);
+  a.forEach((v,i)=>{const node=document.createElement('span');node.className='chip'+(Math.abs(v-mid)<1e-9?' med':'');node.textContent=fmt(v,3);$('outSlopes').append(node);});
+  $('outNLabel').textContent=`${a.length}个有效两点斜率（已排序）${state.repeatX?' · 舍去1个零分母观测对':''}`;
+  const middle=a.length%2?`中间一项为 <b>${fmt(a[Math.floor(a.length/2)])}</b>`:`中间两项为 <b>${fmt(a[a.length/2-1])}</b> 与 <b>${fmt(a[a.length/2])}</b>`;
+  $('outMedianInfo').innerHTML=`${middle}，斜率中位数 = <b>${fmt(mid)}</b>。<br>截距中位数 = <b>${fmt(fit.a)}</b>。${state.repeatX?'<br>由于 X₄ = X₅，观测对 (4,5) 的两点斜率分母为0，已排除。':''}`;
+ }
+ $('outlierY').addEventListener('input',e=>setOutlier(Number(e.target.value)));
+ $('normalPoint').addEventListener('click',()=>setOutlier(10));$('oddPoint').addEventListener('click',()=>setOutlier(20));$('extremePoint').addEventListener('click',()=>setOutlier(35));$('repeatX').addEventListener('click',()=>{state.repeatX=!state.repeatX;renderOutlier();});
+ // CASES
+ function currentCase(){return data[state.caseKey]};
+ function pairSelectionText(p,d){if(!p)return '点击两个散点可计算它们之间的斜率。';return `观测 (${p.i+1}, ${p.j+1})：ΔX = ${fmt(p.dx)}，ΔY = ${fmt(p.dy)}，bᵢⱼ = ${fmt(p.slope,4)}`;}
+ function renderCase(){const d=currentCase(),fit=theil(d),least=ols(d),selected=state.caseSelected.length===2?
+  fit.ps.find(p=>p.i===Math.min(...state.caseSelected)&&p.j===Math.max(...state.caseSelected)):null;
+  const choose=i=>{if(state.caseSelected.includes(i)){state.caseSelected=state.caseSelected.filter(v=>v!==i);}else if(state.caseSelected.length>=2){state.caseSelected=[i];}else state.caseSelected.push(i);renderCase();};
+  makePlot('casePlot',d,{pair:selected,lines:[{...fit,color:'#13968a',width:3.9},{...least,color:'#df913c',width:3.4}],clickPoint:choose});
+  $('caseChartTitle').textContent=d.label;$('caseTotals').textContent=`${d.x.length}个观测 · ${fit.ps.length}个有效两点斜率`;
+  $('caseNLabel').textContent=`${fit.ps.length}种`;
+  $('caseSelectInfo').textContent=pairSelectionText(selected,d);$('rawDetailsTitle').textContent=`查看原始数据（${d.x.length}个观测）`;$('rawXtitle').textContent=d.xlabel;$('rawYtitle').textContent=d.ylabel;
+  $('rawDataBody').innerHTML=d.x.map((x,i)=>`<tr><td>${i+1}</td><td>${fmt(x,2)}</td><td>${fmt(d.y[i],2)}</td></tr>`).join('');
+  $('caseBeta').textContent=fx(fit.b,4);$('caseOlsBeta').textContent=fx(least.b,4);$('caseEq').textContent=equation(fit.a,fit.b,4);$('caseOlsEq').textContent=equation(least.a,least.b,4);
+  $('caseMed').textContent=fx(fit.b,4);$('caseIntercept').textContent=fx(fit.a,4);
+  const ordered=fit.ps.map(p=>p.slope).sort((a,b)=>a-b),m=ordered.length/2;
+  $('caseMedianText').innerHTML=`共 <b>${fit.ps.length}</b> 个可用两点斜率。中位位置：<b>${Math.floor(m)}</b>、<b>${Math.floor(m)+1}</b>；中间两项为 <b>${fmt(ordered[Math.floor(m)-1],4)}</b>、<b>${fmt(ordered[Math.floor(m)],4)}</b>。`;
+  const arr=state.caseSort?fit.ps.slice().sort((u,v)=>u.slope-v.slope):fit.ps,perPage=12,allPages=Math.ceil(arr.length/perPage);state.casePage=Math.min(state.casePage,allPages-1);
+  const slice=arr.slice(state.casePage*perPage,(state.casePage+1)*perPage);$('casePairTable').replaceChildren();
+  slice.forEach(p=>{const tr=document.createElement('tr');tr.dataset.pair=`${p.i},${p.j}`;tr.className=selected&&selected.i===p.i&&selected.j===p.j?'hl':'';
+   tr.innerHTML=`<td>(${p.i+1},${p.j+1})</td><td>${fmt(p.dx,2)}</td><td>${fmt(p.dy,2)}</td><td>${fmt(p.slope,4)}</td>`;
+   tr.addEventListener('click',()=>{state.caseSelected=[p.i,p.j];renderCase();});$('casePairTable').append(tr);
+  });
+  $('casePage').textContent=`${state.casePage+1} / ${allPages}`;$('casePrev').disabled=state.casePage===0;$('caseNext').disabled=state.casePage>=allPages-1;
+  $('caseSort').textContent=state.caseSort?'恢复观测对顺序':'按斜率从小到大排列';
+  document.querySelectorAll('[data-case]').forEach(b=>b.classList.toggle('active',b.dataset.case===state.caseKey));
+ }
+ document.querySelectorAll('[data-case]').forEach(b=>b.addEventListener('click',()=>{state.caseKey=b.dataset.case;state.casePage=0;state.caseSort=false;state.caseSelected=[];renderCase();}));
+ $('casePrev').addEventListener('click',()=>{state.casePage--;renderCase();});$('caseNext').addEventListener('click',()=>{state.casePage++;renderCase();});$('caseSort').addEventListener('click',()=>{state.caseSort=!state.caseSort;state.casePage=0;renderCase();});$('caseResetSelect').addEventListener('click',()=>{state.caseSelected=[];renderCase();});
+ // KENDALL TEST
+ const erf=x=>{const sign=x<0?-1:1;const a=Math.abs(x),t=1/(1+.3275911*a);const y=1-((((1.061405429*t-1.453152027)*t)+1.421413741)*t-.284496736)*t*t*Math.exp(-a*a)-.254829592*t*Math.exp(-a*a);return sign*y;};
+ // Numerical CDF via stable A&S 7.1.26 form
+ function ncdf(z){const x=Math.abs(z)/Math.sqrt(2),t=1/(1+.3275911*x),f=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-.284496736)*t+.254829592)*t*Math.exp(-x*x);return .5*(1+(z<0?-f:f));}
+ function tieSizes(values){const m=new Map();for(const x of values){const v=Math.round(x*1e9)/1e9;m.set(v,(m.get(v)||0)+1);}return [...m.values()].filter(v=>v>1);}
+ function kendall(x,y){let C=0,D=0,TX=0,TY=0,TXY=0;const n=x.length,N=n*(n-1)/2;
+  for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){
+   const a=Math.sign(x[j]-x[i]),b=Math.sign(y[j]-y[i]);if(!a&&!b)TXY++;else if(!a)TX++;else if(!b)TY++;else if(a*b>0)C++;else D++;
+  }
+  const S=C-D,tx=TX+TXY,ty=TY+TXY,denom=Math.sqrt((N-tx)*(N-ty));const tau=denom?S/denom:NaN;
+  const t=tieSizes(x),u=tieSizes(y),sum=(a,f)=>a.reduce((acc,k)=>acc+f(k),0);
+  let v=n*(n-1)*(2*n+5)-sum(t,k=>k*(k-1)*(2*k+5))-sum(u,k=>k*(k-1)*(2*k+5));v/=18;
+  if(n>1)v+=sum(t,k=>k*(k-1))*sum(u,k=>k*(k-1))/(2*n*(n-1));
+  if(n>2)v+=sum(t,k=>k*(k-1)*(k-2))*sum(u,k=>k*(k-1)*(k-2))/(9*n*(n-1)*(n-2));
+  return {C,D,S,TX,TY,TXY,tau,varS:v};
+ }
+ function exactPermutation(x,y,alt){const n=x.length,observed=kendall(x,y).S, a=y.slice();let extreme=0,total=0;
+  // Enumerates labeled permutations, handling tied values by their multiplicity.
+  function go(k){if(k===n){total++;const s=kendall(x,a).S;if(alt==='two'&&Math.abs(s)>=Math.abs(observed)||alt==='less'&&s<=observed||alt==='greater'&&s>=observed)extreme++;return;}
+   for(let i=k;i<n;i++){[a[k],a[i]]=[a[i],a[k]];go(k+1);[a[k],a[i]]=[a[i],a[k]];}}
+  go(0);return {total,extreme,p:extreme/total};
+ }
+ function renderTest(){const d=data[$('testData').value],beta0=Number($('beta0').value),alt=$('alternative').value,resid=d.y.map((y,i)=>y-beta0*d.x[i]),xy={xlabel:d.xlabel,ylabel:'D(β₀) = Y − β₀X',x:d.x,y:resid};
+  const k=kendall(d.x,resid),z=k.varS>0?k.S/Math.sqrt(k.varS):NaN;
+  let method,pv,detail;
+  if(d.x.length===5){const t=exactPermutation(d.x,resid,alt);pv=t.p;method='小样本条件排列检验';detail=`极端排列 ${t.extreme} / ${t.total}`;}
+  else{const left=ncdf(z),right=1-left;pv=alt==='two'?Math.min(1,2*Math.min(left,right)):alt==='less'?left:right;method='Kendall 正态近似（含并列修正）';detail=`Var(S) = ${fmt(k.varS,2)}`;}
+  const betaText=fmt(beta0,3),op=alt==='two'?'≠':alt==='less'?'&lt;':'&gt;';
+  $('testHyp').textContent=`H₀：β = ${betaText}`;$('testAlternative').innerHTML=`H₁：β ${op} ${betaText}`;
+  $('testMethod').textContent=method;$('testObsSummary').textContent=`${d.x.length}个观测 · Dᵢ(β₀) = Yᵢ − (${betaText})Xᵢ`;
+  makePlot('testPlot',xy,{xlabel:d.xlabel,ylabel:'调整后的响应 D(β₀)'});
+  $('testC').textContent=k.C;$('testD').textContent=k.D;$('testTau').textContent=Number.isFinite(k.tau)?signed(k.tau,4):'无定义';
+  $('testZ').textContent=d.x.length===5?String(k.S):signed(z,4);
+  $('testS').textContent=d.x.length===5?`Kendall S = C − D；${detail}`:`S = ${k.S}；${detail}`;
+  $('testP').textContent=Number.isFinite(pv)?pv<.00005?'<0.0001':pv.toFixed(4):'—';$('testPType').textContent=method;
+  $('testConclusion').innerHTML=Number.isFinite(pv)?`P ${pv<.05?'&lt;':'≥'} 0.05：<b>${pv<.05?'拒绝':'不拒绝'} H₀</b>。${pv<.05?'数据支持所选备择方向。':'当前数据不足以支持所选备择方向。'}`:'Kendall统计量不可用：检查数据是否有变化。';
+  $('testExplanation').innerHTML=`计算 Kendall τ(X, D(β₀))，检验调整后的响应变量与 X 是否仍存在单调关联。${d.x.length===5?'本示例对120种标号排列进行精确计数。':'此处采用正态近似，P值并非精确置换P值。'}`;
+ }
+ $('testData').addEventListener('change',e=>{const v=e.target.value;$('beta0').value=v==='countries'?-0.7:v==='five'?2:1.2;$('alternative').value=v==='countries'?'less':'two';renderTest();});
+ $('beta0').addEventListener('input',renderTest);$('alternative').addEventListener('change',renderTest);
+ // CONFIDENCE SET INVERSION (visual teaching grid; α=0.05)
+ function twoSidedP(d,beta){
+  const adjusted=d.y.map((y,i)=>y-beta*d.x[i]),stat=kendall(d.x,adjusted);
+  if(d.x.length===5)return exactPermutation(d.x,adjusted,'two').p;
+  if(!(stat.varS>0))return NaN;
+  const z=stat.S/Math.sqrt(stat.varS),tail=ncdf(z);
+  return Math.min(1,2*Math.min(tail,1-tail));
+ }
+ function drawScan(){
+  const d=data[$('testData').value],arr=theil(d).ps.map(p=>p.slope).sort((a,b)=>a-b);
+  const quant=q=>arr[Math.round((arr.length-1)*q)];
+  const q35=quant(.35),q65=quant(.65),spread=Math.max(.2,q65-q35),xmin=q35-1.3*spread,xmax=q65+1.3*spread;
+  const N=101,entries=[];for(let i=0;i<N;i++){const beta=xmin+(xmax-xmin)*i/(N-1);entries.push({beta,p:twoSidedP(d,beta)});}
+  const svg=$('scanPlot');svg.replaceChildren();const W=850,H=330,L=64,R=24,T=20,B=54,plotW=W-L-R,plotH=H-T-B;
+  const xx=x=>L+(x-xmin)/(xmax-xmin)*plotW,yy=y=>T+(1-y)*plotH;
+  const add=(t,a,v)=>{const e=mk(t,a,v);svg.append(e);return e;};
+  for(let i=0;i<=5;i++){const p=i/5,y=yy(p);add('line',{x1:L,x2:W-R,y1:y,y2:y,stroke:i===0?'#a8bdd0':'#e6eef6'});add('text',{x:L-9,y:y+5,fill:'#7b93aa','text-anchor':'end','font-size':13},fmt(p,1));
+   const b=xmin+i/5*(xmax-xmin);add('text',{x:xx(b),y:H-B+24,fill:'#6b88a2','text-anchor':'middle','font-size':13},fmt(b,2));}
+  add('line',{x1:L,y1:T,x2:L,y2:H-B,stroke:'#a0b4ca'});
+  const accepted=entries.filter(e=>e.p>.05);
+  if(accepted.length){const a=accepted[0].beta,b=accepted.at(-1).beta;add('rect',{x:xx(a),y:T,width:xx(b)-xx(a),height:plotH,fill:'#e7f6f1'});}
+  const threshold=yy(.05);add('line',{x1:L,y1:threshold,x2:W-R,y2:threshold,stroke:'#de8d34','stroke-width':2,'stroke-dasharray':'6 4'});
+  add('text',{x:W-R-4,y:threshold-7,'text-anchor':'end',fill:'#b77728','font-weight':750,'font-size':14},'α = 0.05');
+  const path=entries.map((e,i)=>`${i?'L':'M'}${xx(e.beta).toFixed(2)},${yy(e.p).toFixed(2)}`).join(' ');
+  add('path',{d:path,fill:'none',stroke:'#2a77c4','stroke-width':3,'stroke-linejoin':'round'});
+  const testBeta=Number($('beta0').value);
+  if(testBeta>=xmin&&testBeta<=xmax){const bx=xx(testBeta),p=twoSidedP(d,testBeta);add('line',{x1:bx,x2:bx,y1:T,y2:H-B,stroke:'#bd7c2b','stroke-width':2,'stroke-dasharray':'5 4'});add('circle',{cx:bx,cy:yy(p),r:5.5,fill:'#bf7930',stroke:'#fff','stroke-width':1.5});}
+  const center=theil(d).b;
+  if(center>=xmin&&center<=xmax){add('line',{x1:xx(center),x2:xx(center),y1:T,y2:H-B,stroke:'#158f82','stroke-width':2,'stroke-dasharray':'3 4'});}
+  add('text',{x:(L+W-R)/2,y:H-10,'text-anchor':'middle',fill:'#537594','font-size':15,'font-weight':750},'假设斜率 β₀');
+  $('scanExplain').innerHTML=accepted.length?`双侧检验 P(β₀) &gt; 0.05 的网格范围约为 <b>[${fmt(accepted[0].beta,3)}, ${fmt(accepted.at(-1).beta,3)}]</b>。<br>绿色区域：未拒绝候选斜率；蓝线：双侧 P(β₀)；橙色虚线：当前 β₀；绿色虚线：Theil–Sen 斜率。`:'当前扫描范围内没有双侧 P &gt; 0.05 的候选斜率。';
+  $('scanArea').hidden=false;
+ }
+ $('scanBtn').addEventListener('click',drawScan);
+ $('scanHide').addEventListener('click',()=>{$('scanArea').hidden=true;});
+ $('testData').addEventListener('change',()=>{$('scanArea').hidden=true;});
+ $('beta0').addEventListener('input',()=>{if(!$('scanArea').hidden)drawScan();});
+ // startup
+ renderPairs();renderOutlier();renderCase();renderTest();
+})();
+</script>
+</body>
+</html>
